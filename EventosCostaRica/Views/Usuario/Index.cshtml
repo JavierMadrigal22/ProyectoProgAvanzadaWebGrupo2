@@ -1,0 +1,72 @@
+﻿@model IEnumerable<CapaObjetos.ViewModelos.UsuarioViewModelo>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Administración De Usuarios</h1>
+
+<p>
+    <a asp-action="Create">Crear Nuevo Usuario</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rol)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apellido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+                <td>
+                    <input type="password" class="form-control-plaintext" value="@item.Password" readonly />
+                </td>
+
+                <td>
+                    @(item.Rol == 1 ? "Administrador" : item.Rol == 2 ? "Cliente" : "Desconocido")
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telefono)
+            </td>
+                <td>
+                    @(item.Estado ? "Activo" : "Inactivo")
+                </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.UsuarioId">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.UsuarioId">Detalles</a> |
+                <a asp-action="Delete" asp-route-id="@item.UsuarioId">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

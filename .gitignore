@@ -1,0 +1,21 @@
+# Visual Studio
+.vs/
+
+# Build outputs
+**/bin/
+**/obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.ide
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# Configuración sensible (si la tuvieras)
+appsettings.*.json
