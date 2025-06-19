@@ -1,16 +1,17 @@
 # ProyectoProgAvanzadaWebGrupo2
 ProyectoProgAvanzadaWebGrupo2
 
-1. Integrantes finales del grupo. A los que se les asignará la nota del proyecto 
-Madrigal Pozo Lester Javier
-Acuña Perez Sebastian
-Alpizar Alpizar Mauricio
-Jimenez Mora Moises Enrique
+1. Integrantes finales del grupo. A los que se les asignará la nota del proyecto
+   
+Madrigal Pozo Lester Javier, 
+Acuña Perez Sebastian, 
+Alpizar Alpizar Mauricio, 
+Jimenez Mora Moises Enrique, 
 
-2. Enlace del repositorio si lo subió en GitHub o en algún otro. 
+3. Enlace del repositorio si lo subió en GitHub o en algún otro. 
 https://github.com/JavierMadrigal22/ProyectoProgAvanzadaWebGrupo2.git
 
-3. Especificación básica del proyecto: 
+4. Especificación básica del proyecto: 
 a. Arquitectura del proyecto (tipos de proyectos que utilizo y contiene el 
 programa) 
 Arquitectura en capas Model-View-Controller (MVC),  servicios BLL, repositorios DAL con Inyección de Dependencias y separación de responsabilidades. 
