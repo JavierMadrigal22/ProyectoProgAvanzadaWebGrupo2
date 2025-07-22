@@ -1,6 +1,8 @@
 using CapaAccesoADatosDAL;
+using CapaAccesoADatosDAL.Repositorios.ListaEvento;
 using CapaAccesoADatosDAL.Repositorios.Role;
 using CapaAccesoADatosDAL.Repositorios.Usuario;
+using CapaLogicaDeNegocioBLL.Servicios.ListaEventos;
 using CapaLogicaDeNegocioBLL.Servicios.Role;
 using CapaLogicaDeNegocioBLL.Servicios.Usuario;
 using CapaObjetos;
@@ -21,6 +23,11 @@ builder.Services.AddControllersWithViews(options =>
                      .Build();
     options.Filters.Add(new AuthorizeFilter(policy));
 });
+
+// Agrega estos servicios después de builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IListaEventoRepositorio, ListaEventoRepositorio>();
+builder.Services.AddScoped<IListaEventoServicio, ListaEventoService>();
 
 // 2. Configurar la cadena de conexión y DbContext
 builder.Services.AddDbContext<EventoscostaricaContext>(options =>

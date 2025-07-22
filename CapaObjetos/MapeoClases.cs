@@ -21,6 +21,10 @@ namespace CapaObjetos
             // Mapeos para Rol
             CreateMap<Rol, RolViewModelo>();
             CreateMap<RolViewModelo, Rol>();
+
+            // ✅ Mapeos para ListaEvento
+            CreateMap<ListaEvento, ListaEventoViewModelo>();
+            CreateMap<ListaEventoViewModelo, ListaEvento>();
         }
 
     }

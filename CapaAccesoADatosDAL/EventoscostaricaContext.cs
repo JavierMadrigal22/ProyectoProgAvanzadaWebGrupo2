@@ -15,9 +15,11 @@ namespace CapaAccesoADatosDAL
 
         public virtual DbSet<Usuario> Usuarios { get; set; }
         public virtual DbSet<Rol> Roles { get; set; }
+        public virtual DbSet<ListaEvento> ListaEventos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Configuración de Usuario
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.HasKey(e => e.UsuarioId)
@@ -41,15 +43,14 @@ namespace CapaAccesoADatosDAL
                 entity.Property(e => e.Rol).HasMaxLength(50);
                 entity.Property(e => e.Telefono).HasMaxLength(20);
 
-                // Configuración de la FK string → string
                 entity.HasOne(u => u.RolNavigation)
-                 .WithMany()
-                 .HasForeignKey(u => u.Rol)
-                 .HasPrincipalKey(r => r.RolID)
-                 .OnDelete(DeleteBehavior.Restrict);
-
+                     .WithMany()
+                     .HasForeignKey(u => u.Rol)
+                     .HasPrincipalKey(r => r.RolID)
+                     .OnDelete(DeleteBehavior.Restrict);
             });
 
+            // Configuración de Rol
             modelBuilder.Entity<Rol>(entity =>
             {
                 entity.HasKey(e => e.RolID)
@@ -61,6 +62,42 @@ namespace CapaAccesoADatosDAL
                       .HasDefaultValueSql("SYSUTCDATETIME()");
                 entity.Property(e => e.FechaActualizacion)
                       .HasDefaultValueSql("SYSUTCDATETIME()");
+            });
+
+            // Configuración de ListaEvento
+            modelBuilder.Entity<ListaEvento>(entity =>
+            {
+                entity.ToTable("ListaEvento");
+
+                entity.HasKey(e => e.EventoId); // usa la columna real 'EventoID'
+
+                entity.Property(e => e.EventoId)
+                      .HasColumnName("EventoID"); // OJO: aquí es EventoID, no Id
+
+                entity.Property(e => e.Nombre)
+                      .HasMaxLength(100)
+                      .IsFixedLength();
+
+                entity.Property(e => e.Ubicacion)
+                      .HasMaxLength(100)
+                      .IsFixedLength();
+
+                entity.Property(e => e.Descripcion)
+                      .HasMaxLength(100)
+                      .IsFixedLength();
+
+                entity.Property(e => e.Capacidad);
+
+                entity.Property(e => e.FechaHora)
+                      .HasMaxLength(100)
+                      .IsFixedLength();
+
+                entity.Property(e => e.FechaCreacion)
+                      .HasColumnType("datetime");
+
+                entity.Property(e => e.FechaActualizacion)
+                      .HasColumnType("datetime");
+
             });
 
             OnModelCreatingPartial(modelBuilder);
