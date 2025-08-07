@@ -1,0 +1,220 @@
+@model List<CapaObjetos.ViewModelos.ListaEventoViewModelo>
+
+@{
+    ViewData["Title"] = "Próximos Eventos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-calendar-alt"></i> Próximos Eventos</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-list"></i> Ver Todos los Eventos
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var evento in Model.OrderBy(e => e.FechaHora))
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 evento-card">
+                        @if (!string.IsNullOrEmpty(evento.Banner))
+                        {
+                            <img src="@evento.Banner" class="card-img-top" alt="Banner del evento" style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-gradient-primary d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-calendar-day fa-3x text-white"></i>
+                            </div>
+                        }
+                        
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="badge @(evento.Estado ? "bg-success" : "bg-danger")">
+                                @(evento.Estado ? "Activo" : "Inactivo")
+                            </span>
+                            <small class="text-muted">
+                                @{
+                                    var diasRestantes = (evento.FechaHora - DateTime.Now).Days;
+                                }
+                                @if (diasRestantes == 0)
+                                {
+                                    <span class="badge bg-warning">HOY</span>
+                                }
+                                else if (diasRestantes == 1)
+                                {
+                                    <span class="badge bg-info">MAÑANA</span>
+                                }
+                                else
+                                {
+                                    <span>En @diasRestantes días</span>
+                                }
+                            </small>
+                        </div>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">@evento.Nombre</h5>
+                            
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-map-marker-alt"></i> @evento.Ubicacion
+                                </small>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar"></i> @evento.FechaHora.ToString("dddd, dd 'de' MMMM")
+                                </small>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock"></i> @evento.FechaHora.ToString("HH:mm")
+                                </small>
+                            </div>
+                            
+                            <p class="card-text">
+                                @if (evento.Descripcion?.Length > 100)
+                                {
+                                    @(evento.Descripcion.Substring(0, 100) + "...")
+                                }
+                                else
+                                {
+                                    @evento.Descripcion
+                                }
+                                }
+                            </p>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">Capacidad:</span>
+                                    <span class="fw-bold">@evento.Capacidad personas</span>
+                                </div>
+                                @if (evento.PrecioBase > 0)
+                                {
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">Precio desde:</span>
+                                        <span class="h6 text-success mb-0">₡@evento.PrecioBase.ToString("N2")</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer bg-transparent">
+                            <div class="d-grid gap-2">
+                                <a asp-action="Details" asp-route-id="@evento.EventoId" 
+                                   class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> Ver Detalles
+                                </a>
+                                
+                                @if (evento.Estado && evento.FechaHora > DateTime.Now)
+                                {
+                                    <a asp-controller="Boleto" asp-action="Comprar" asp-route-id="@evento.EventoId" 
+                                       class="btn btn-success">
+                                        <i class="fas fa-ticket-alt"></i> Comprar Boletos
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <!-- Información adicional -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <h4 class="text-primary">@Model.Count()</h4>
+                                <small class="text-muted">Próximos Eventos</small>
+                            </div>
+                            <div class="col-md-4">
+                                <h4 class="text-success">@Model.Where(e => e.FechaHora.Date == DateTime.Today).Count()</h4>
+                                <small class="text-muted">Eventos Hoy</small>
+                            </div>
+                            <div class="col-md-4">
+                                <h4 class="text-info">@Model.Where(e => e.FechaHora <= DateTime.Now.AddDays(7)).Count()</h4>
+                                <small class="text-muted">Esta Semana</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-5">
+            <div class="mb-4">
+                <i class="fas fa-calendar-times fa-5x text-muted"></i>
+            </div>
+            <h4 class="text-muted">No hay próximos eventos</h4>
+            <p class="text-muted">Por el momento no tenemos eventos programados para el futuro.</p>
+            <a asp-action="Index" class="btn btn-primary">
+                <i class="fas fa-list"></i> Ver Todos los Eventos
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .evento-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .evento-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+    }
+    
+    .card-img-top {
+        border-top-left-radius: calc(0.25rem - 1px);
+        border-top-right-radius: calc(0.25rem - 1px);
+    }
+    
+    .btn {
+        border-radius: 0.375rem;
+        font-weight: 500;
+    }
+    
+    .btn-success {
+        background-color: #198754;
+        border-color: #198754;
+    }
+    
+    .btn-success:hover {
+        background-color: #157347;
+        border-color: #146c43;
+    }
+</style>

@@ -1,7 +1,11 @@
 using CapaAccesoADatosDAL;
+using CapaAccesoADatosDAL.Repositorios.Asiento;
+using CapaAccesoADatosDAL.Repositorios.Boleto;
 using CapaAccesoADatosDAL.Repositorios.ListaEvento;
 using CapaAccesoADatosDAL.Repositorios.Role;
 using CapaAccesoADatosDAL.Repositorios.Usuario;
+using CapaLogicaDeNegocioBLL.Servicios.Asiento;
+using CapaLogicaDeNegocioBLL.Servicios.Boleto;
 using CapaLogicaDeNegocioBLL.Servicios.ListaEventos;
 using CapaLogicaDeNegocioBLL.Servicios.Role;
 using CapaLogicaDeNegocioBLL.Servicios.Usuario;
@@ -15,7 +19,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Configurar MVC con filtro global de autenticaci髇
+// 1. Configurar MVC con filtro global de autenticaci贸n
 builder.Services.AddControllersWithViews(options =>
 {
     var policy = new AuthorizationPolicyBuilder()
@@ -24,38 +28,49 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 });
 
-// Agrega estos servicios despu閟 de builder.Services.AddControllersWithViews();
-
-builder.Services.AddScoped<IListaEventoRepositorio, ListaEventoRepositorio>();
-builder.Services.AddScoped<IListaEventoServicio, ListaEventoService>();
-
-// 2. Configurar la cadena de conexi髇 y DbContext
+// 2. Configurar la cadena de conexi贸n y DbContext
 builder.Services.AddDbContext<EventoscostaricaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 3. Inyecci髇 de dependencias para repositorios y servicios
+// 3. Inyecci贸n de dependencias para repositorios y servicios
+
+// Repositorios
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IRoleRepositorio, RoleRepositorio>();
+builder.Services.AddScoped<IListaEventoRepositorio, ListaEventoRepositorio>();
+builder.Services.AddScoped<IAsientoRepositorio, AsientoRepositorio>();
+builder.Services.AddScoped<IBoletoRepositorio, BoletoRepositorio>();
+
+// Servicios
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IListaEventoServicio, ListaEventoService>();
+builder.Services.AddScoped<IAsientoServicio, AsientoServicio>();
+builder.Services.AddScoped<IBoletoServicio, BoletoServicio>();
 
 // 4. Configurar AutoMapper
 builder.Services.AddAutoMapper(typeof(MapeoClases));
 
-// 5. Registrar el hasher de contrase馻s para UsuarioViewModelo
+// 5. Registrar el hasher de contrase帽as para UsuarioViewModelo
 builder.Services.AddScoped<IPasswordHasher<UsuarioViewModelo>, PasswordHasher<UsuarioViewModelo>>();
 
-// 6. Configurar autenticaci髇 por cookie
+// 6. Configurar autenticaci贸n por cookie
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromHours(24);
+        options.SlidingExpiration = true;
     });
 
-// 7. Configurar autorizaci髇
-builder.Services.AddAuthorization();
+// 7. Configurar autorizaci贸n
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Administrador"));
+    options.AddPolicy("UserOnly", policy => policy.RequireRole("Cliente"));
+});
 
 var app = builder.Build();
 

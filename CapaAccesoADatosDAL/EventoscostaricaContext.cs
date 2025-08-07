@@ -16,6 +16,8 @@ namespace CapaAccesoADatosDAL
         public virtual DbSet<Usuario> Usuarios { get; set; }
         public virtual DbSet<Rol> Roles { get; set; }
         public virtual DbSet<ListaEvento> ListaEventos { get; set; }
+        public virtual DbSet<Asiento> Asientos { get; set; }
+        public virtual DbSet<Boleto> Boletos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,35 +71,153 @@ namespace CapaAccesoADatosDAL
             {
                 entity.ToTable("ListaEvento");
 
-                entity.HasKey(e => e.EventoId); // usa la columna real 'EventoID'
+                entity.HasKey(e => e.EventoId);
 
                 entity.Property(e => e.EventoId)
-                      .HasColumnName("EventoID"); // OJO: aquí es EventoID, no Id
+                      .HasColumnName("EventoID");
 
                 entity.Property(e => e.Nombre)
-                      .HasMaxLength(100)
-                      .IsFixedLength();
+                      .HasMaxLength(200)
+                      .IsRequired();
 
                 entity.Property(e => e.Ubicacion)
-                      .HasMaxLength(100)
-                      .IsFixedLength();
+                      .HasMaxLength(300)
+                      .IsRequired();
 
                 entity.Property(e => e.Descripcion)
-                      .HasMaxLength(100)
-                      .IsFixedLength();
+                      .HasMaxLength(1000)
+                      .IsRequired();
 
-                entity.Property(e => e.Capacidad);
+                entity.Property(e => e.Capacidad)
+                      .IsRequired();
 
                 entity.Property(e => e.FechaHora)
-                      .HasMaxLength(100)
-                      .IsFixedLength();
+                      .HasColumnType("datetime")
+                      .IsRequired();
 
                 entity.Property(e => e.FechaCreacion)
-                      .HasColumnType("datetime");
+                      .HasColumnType("datetime")
+                      .HasDefaultValueSql("SYSUTCDATETIME()");
 
                 entity.Property(e => e.FechaActualizacion)
-                      .HasColumnType("datetime");
+                      .HasColumnType("datetime")
+                      .HasDefaultValueSql("SYSUTCDATETIME()");
 
+                entity.Property(e => e.Banner)
+                      .HasMaxLength(500);
+
+                entity.Property(e => e.PrecioBase)
+                      .HasColumnType("decimal(10,2)")
+                      .IsRequired();
+
+                entity.Property(e => e.Estado)
+                      .IsRequired()
+                      .HasDefaultValueSql("1");
+
+                // Relaciones
+                entity.HasMany(e => e.Asientos)
+                      .WithOne(a => a.Evento)
+                      .HasForeignKey(a => a.EventoId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(e => e.Boletos)
+                      .WithOne(b => b.Evento)
+                      .HasForeignKey(b => b.EventoId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configuración de Asiento
+            modelBuilder.Entity<Asiento>(entity =>
+            {
+                entity.ToTable("Asientos");
+
+                entity.HasKey(e => e.AsientoId);
+
+                entity.Property(e => e.AsientoId)
+                      .HasColumnName("AsientoID");
+
+                entity.Property(e => e.EventoId)
+                      .HasColumnName("EventoID")
+                      .IsRequired();
+
+                entity.Property(e => e.Fila)
+                      .IsRequired();
+
+                entity.Property(e => e.Numero)
+                      .IsRequired();
+
+                entity.Property(e => e.EstaOcupado)
+                      .HasDefaultValue(false);
+
+                entity.Property(e => e.FechaCreacion)
+                      .HasColumnType("datetime")
+                      .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                // Índice único para evitar asientos duplicados
+                entity.HasIndex(e => new { e.EventoId, e.Fila, e.Numero })
+                      .IsUnique()
+                      .HasDatabaseName("IX_Asientos_Evento_Fila_Numero");
+
+                // Relaciones
+                entity.HasOne(a => a.Evento)
+                      .WithMany(e => e.Asientos)
+                      .HasForeignKey(a => a.EventoId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(a => a.Boletos)
+                      .WithOne(b => b.Asiento)
+                      .HasForeignKey(b => b.AsientoId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Configuración de Boleto
+            modelBuilder.Entity<Boleto>(entity =>
+            {
+                entity.ToTable("Boletos");
+
+                entity.HasKey(e => e.BoletoId);
+
+                entity.Property(e => e.BoletoId)
+                      .HasColumnName("BoletoID");
+
+                entity.Property(e => e.EventoId)
+                      .HasColumnName("EventoID")
+                      .IsRequired();
+
+                entity.Property(e => e.UsuarioId)
+                      .HasColumnName("UsuarioID")
+                      .IsRequired();
+
+                entity.Property(e => e.AsientoId)
+                      .HasColumnName("AsientoID")
+                      .IsRequired();
+
+                entity.Property(e => e.Precio)
+                      .HasColumnType("decimal(10,2)")
+                      .IsRequired();
+
+                entity.Property(e => e.FechaCompra)
+                      .HasColumnType("datetime")
+                      .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                entity.Property(e => e.Estado)
+                      .HasDefaultValue(true);
+
+                // Relaciones
+                entity.HasOne(b => b.Evento)
+                      .WithMany(e => e.Boletos)
+                      .HasForeignKey(b => b.EventoId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(b => b.Usuario)
+                      .WithMany()
+                      .HasForeignKey(b => b.UsuarioId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(b => b.Asiento)
+                      .WithMany(a => a.Boletos)
+                      .HasForeignKey(b => b.AsientoId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             OnModelCreatingPartial(modelBuilder);

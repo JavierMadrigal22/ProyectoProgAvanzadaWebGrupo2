@@ -4,62 +4,149 @@
     bool isAuthPage = ctrl == "Account" && (act == "Login" || act == "Register");
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EventosCostaRica</title>
+    <title>@ViewData["Title"] - Eventos Costa Rica</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EventosCostaRica.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 <body>
-    @* Mostrar navbar solo si no es Login/Register *@
     @if (!isAuthPage)
     {
         <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container-fluid">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Eventos De CostaRica</a>
+            <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-dark bg-primary shadow-sm">
+                <div class="container">
+                    <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="fas fa-calendar-alt"></i> Eventos Costa Rica
+                    </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                                <a class="nav-link @(ctrl == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">
+                                    <i class="fas fa-home"></i> Inicio
+                                </a>
                             </li>
-                            @if (User.IsInRole("1"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
-                                </li>
+                            
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle @(ctrl == "ListaEvento" ? "active" : "")" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-calendar-day"></i> Eventos
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="ListaEvento" asp-action="ProximosEventos">
+                                            <i class="fas fa-clock text-primary"></i> Próximos Eventos
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="ListaEvento" asp-action="Index">
+                                            <i class="fas fa-list text-info"></i> Todos los Eventos
+                                        </a>
+                                    </li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="ListaEvento" asp-action="Create">
+                                                <i class="fas fa-plus text-success"></i> Crear Evento
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
 
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="ListaEvento" asp-action="Index">Lista de eventos</a>
-                                </li>
-                            }
-                        </ul>
-                        <ul class="navbar-nav">
                             @if (User.Identity?.IsAuthenticated ?? false)
                             {
                                 <li class="nav-item">
-                                    <span class="nav-link disabled">Hola, @User.Identity.Name</span>
+                                    <a class="nav-link @(ctrl == "Boleto" ? "active" : "")" asp-controller="Boleto" asp-action="MisBoletos">
+                                        <i class="fas fa-ticket-alt"></i> Mis Boletos
+                                    </a>
                                 </li>
-                                <li class="nav-item">
-                                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-link nav-link">Cerrar sesión</button>
-                                    </form>
+                            }
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle @(ctrl == "Usuario" ? "active" : "")" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-cog"></i> Administración
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Usuario" asp-action="Index">
+                                                <i class="fas fa-users text-primary"></i> Gestión de Usuarios
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="ListaEvento" asp-action="Index">
+                                                <i class="fas fa-calendar-check text-info"></i> Gestión de Eventos
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <h6 class="dropdown-header">Reportes</h6>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#" onclick="alert('Funcionalidad en desarrollo')">
+                                                <i class="fas fa-chart-bar text-warning"></i> Reportes de Ventas
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#" onclick="alert('Funcionalidad en desarrollo')">
+                                                <i class="fas fa-analytics text-success"></i> Estadísticas
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                        
+                        <ul class="navbar-nav">
+                            @if (User.Identity?.IsAuthenticated ?? false)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-user-circle"></i> @User.Identity.Name
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                                <i class="fas fa-user text-primary"></i> Mi Perfil
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Boleto" asp-action="MisBoletos">
+                                                <i class="fas fa-ticket-alt text-info"></i> Mis Boletos
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
                                 </li>
                             }
                             else
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                                    <a class="nav-link" asp-controller="Account" asp-action="Login">
+                                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Account" asp-action="Register">Registro</a>
+                                    <a class="nav-link" asp-controller="Account" asp-action="Register">
+                                        <i class="fas fa-user-plus"></i> Registro
+                                    </a>
                                 </li>
                             }
                         </ul>
@@ -69,15 +156,24 @@
         </header>
     }
 
-    <div class="container">
+    <div class="@(isAuthPage ? "container-fluid" : "container")">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - EventosCostaRica - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted bg-light mt-5">
+        <div class="container py-3">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 - Eventos Costa Rica. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none">
+                        <i class="fas fa-shield-alt"></i> Política de Privacidad
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
 

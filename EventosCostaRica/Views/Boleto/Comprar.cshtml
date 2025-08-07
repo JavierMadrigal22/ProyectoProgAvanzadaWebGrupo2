@@ -1,0 +1,298 @@
+@model CapaObjetos.ViewModelos.ComprarBoletoViewModelo
+
+@{
+    ViewData["Title"] = "Comprar Boletos";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-ticket-alt"></i> Seleccionar Asientos</h3>
+                    <p class="mb-0 text-muted">Evento: <strong>@Model.Evento.Nombre</strong></p>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Comprar" method="post" id="formCompra" novalidate>
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="EventoId" />
+                        <input type="hidden" asp-for="UsuarioId" />
+                        
+                        <!-- Información del evento -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-map-marker-alt"></i> Ubicación:</strong> @Model.Evento.Ubicacion
+                            </div>
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-calendar-alt"></i> Fecha:</strong> @Model.Evento.FechaHora.ToString("dd/MM/yyyy HH:mm")
+                            </div>
+                        </div>
+                        
+                        <!-- Leyenda -->
+                        <div class="text-center mb-3">
+                            <div class="badge bg-dark p-2 mb-3">ESCENARIO</div>
+                            <div>
+                                <span class="badge bg-success me-2">■ Disponible</span>
+                                <span class="badge bg-danger me-2">■ Ocupado</span>
+                                <span class="badge bg-primary">■ Seleccionado</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Mapa de asientos -->
+                        <div class="asientos-container">
+                            @for (int fila = 1; fila <= 10; fila++)
+                            {
+                                <div class="fila-asientos mb-1">
+                                    <span class="fila-numero">@fila</span>
+                                    @for (int numero = 1; numero <= 10; numero++)
+                                    {
+                                        var asiento = Model.Asientos.FirstOrDefault(a => a.Fila == fila && a.Numero == numero);
+                                        var disponible = asiento != null && !asiento.EstaOcupado;
+                                        
+                                        if (disponible)
+                                        {
+                                            var isSelected = Model.AsientosSeleccionados.Contains(asiento?.AsientoId ?? 0);
+                                            <label class="asiento-label">
+                                                <input type="checkbox" name="AsientosSeleccionados" value="@(asiento?.AsientoId ?? 0)" 
+                                                       class="asiento-checkbox d-none" @(isSelected ? "checked" : "") />
+                                                <span class="asiento disponible seleccionable @(isSelected ? "seleccionado" : "")" 
+                                                      data-fila="@fila" data-numero="@numero"
+                                                      title="Fila @fila - Asiento @numero (Disponible)">
+                                                    @numero
+                                                </span>
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <span class="asiento ocupado" 
+                                                  title="Fila @fila - Asiento @numero (Ocupado)">
+                                                @numero
+                                            </span>
+                                        }
+                                    }
+                                </div>
+                            }
+                        </div>
+                        
+                        <!-- Validación -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger mt-3"></div>
+                        
+                        @if (TempData["Error"] != null)
+                        {
+                            <div class="alert alert-danger mt-3">
+                                <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+                            </div>
+                        }
+                        
+                        <!-- Botones de acción -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-controller="ListaEvento" asp-action="Details" asp-route-id="@Model.EventoId" 
+                               class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary" id="btnComprar" disabled>
+                                <i class="fas fa-shopping-cart"></i> <span id="btnTexto">Comprar Boletos</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panel de resumen -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-receipt"></i> Resumen de Compra</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Precio por boleto:</strong>
+                        <span class="h5 text-primary">₡@Model.Evento.PrecioBase.ToString("N2")</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Asientos seleccionados:</strong>
+                        <span id="cantidadAsientos" class="h6 text-info">0</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Total a pagar:</strong>
+                        <span id="totalPagar" class="h4 text-success">₡0.00</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div id="asientosSeleccionados" class="mb-3">
+                        <strong>Asientos:</strong>
+                        <div id="listaAsientos" class="mt-2">
+                            <em class="text-muted">Ningún asiento seleccionado</em>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <small>
+                            <i class="fas fa-info-circle"></i>
+                            Haga clic en los asientos que desea comprar
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .asientos-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .fila-asientos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+    }
+    
+    .fila-numero {
+        width: 30px;
+        text-align: center;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+    
+    .asiento {
+        display: inline-block;
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: bold;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .asiento-label {
+        margin: 0;
+        cursor: pointer;
+    }
+    
+    .asiento.disponible {
+        background-color: #28a745;
+        border: 2px solid #1e7e34;
+    }
+    
+    .asiento.seleccionable:hover {
+        background-color: #218838;
+        transform: scale(1.1);
+    }
+    
+    .asiento.seleccionado {
+        background-color: #007bff !important;
+        border: 2px solid #0056b3 !important;
+        transform: scale(1.1);
+    }
+    
+    .asiento.ocupado {
+        background-color: #dc3545;
+        border: 2px solid #c82333;
+        cursor: not-allowed;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const precioBase = @Model.Evento.PrecioBase;
+    const asientosCheckbox = document.querySelectorAll('.asiento-checkbox');
+    const cantidadElement = document.getElementById('cantidadAsientos');
+    const totalElement = document.getElementById('totalPagar');
+    const listaElement = document.getElementById('listaAsientos');
+    const btnComprar = document.getElementById('btnComprar');
+    const btnTexto = document.getElementById('btnTexto');
+    const form = document.querySelector('form');
+    
+    // Manejar envío del formulario - SIMPLIFICADO
+    form.addEventListener('submit', function(e) {
+        
+        const seleccionados = document.querySelectorAll('.asiento-checkbox:checked');
+        
+        if (seleccionados.length === 0) {
+            e.preventDefault();
+            alert('Debe seleccionar al menos un asiento');
+            return false;
+        }
+        
+        btnComprar.disabled = true;
+        btnTexto.textContent = 'Procesando...';
+        
+        // Dejar que el formulario se envíe normalmente
+        return true;
+    });
+    
+    // Validación simple al hacer clic
+    btnComprar.addEventListener('click', function(e) {
+        const seleccionados = document.querySelectorAll('.asiento-checkbox:checked');
+        
+        if (seleccionados.length === 0) {
+            e.preventDefault();
+            alert('Debe seleccionar al menos un asiento');
+            return false;
+        }
+    });
+    
+    function actualizarResumen() {
+        const seleccionados = document.querySelectorAll('.asiento-checkbox:checked');
+        const cantidad = seleccionados.length;
+        const total = cantidad * precioBase;
+        
+        cantidadElement.textContent = cantidad;
+        totalElement.textContent = '₡' + total.toLocaleString('es-CR', {minimumFractionDigits: 2});
+        
+        // Actualizar lista de asientos
+        if (cantidad === 0) {
+            listaElement.innerHTML = '<em class="text-muted">Ningún asiento seleccionado</em>';
+            btnComprar.disabled = true;
+        } else {
+            const asientos = Array.from(seleccionados).map(checkbox => {
+                const span = checkbox.nextElementSibling;
+                const fila = span.dataset.fila;
+                const numero = span.dataset.numero;
+                return `Fila ${fila} - Asiento ${numero}`;
+            });
+            listaElement.innerHTML = asientos.map(asiento => 
+                `<span class="badge bg-primary me-1 mb-1">${asiento}</span>`
+            ).join('');
+            btnComprar.disabled = false;
+        }
+    }
+    
+    // Event listeners para los checkboxes
+    asientosCheckbox.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const asientoSpan = this.nextElementSibling;
+            if (this.checked) {
+                asientoSpan.classList.add('seleccionado');
+            } else {
+                asientoSpan.classList.remove('seleccionado');
+            }
+            actualizarResumen();
+        });
+    });
+    
+    // Inicializar - verificar asientos ya seleccionados
+    asientosCheckbox.forEach(checkbox => {
+        if (checkbox.checked) {
+            checkbox.nextElementSibling.classList.add('seleccionado');
+        }
+    });
+    
+    actualizarResumen();
+});
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

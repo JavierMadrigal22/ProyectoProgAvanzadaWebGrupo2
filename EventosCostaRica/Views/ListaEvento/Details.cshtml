@@ -1,33 +1,243 @@
-﻿@model CapaObjetos.ViewModelos.ListaEventoViewModelo
+﻿@model CapaObjetos.ViewModelos.EventoDetalleViewModelo
 
 @{
     ViewData["Title"] = "Detalles del Evento";
 }
 
-<h1>Detalles del Evento</h1>
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Nombre)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Nombre)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Ubicacion)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Ubicacion)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Descripcion)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Descripcion)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Capacidad)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Capacidad)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.FechaHora)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.FechaHora)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Estado)</dt>
-        <dd class="col-sm-10">@(Model.Estado ? "Activo" : "Inactivo")</dd>
-    </dl>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                @if (!string.IsNullOrEmpty(Model.Banner))
+                {
+                    <img src="@Model.Banner" class="card-img-top" alt="Banner del evento" style="height: 300px; object-fit: cover;">
+                }
+                <div class="card-header">
+                    <h1 class="card-title mb-0">@Model.Nombre</h1>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <span class="badge @(Model.Estado ? "bg-success" : "bg-danger")">
+                            @(Model.Estado ? "Activo" : "Inactivo")
+                        </span>
+                        <span class="badge @(Model.EstaVendido ? "bg-warning" : "bg-info")">
+                            @(Model.EstaVendido ? "VENDIDO" : "DISPONIBLE")
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-map-marker-alt"></i> Ubicación</h5>
+                            <p class="text-muted">@Model.Ubicacion</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-calendar-alt"></i> Fecha y Hora</h5>
+                            <p class="text-muted">@Model.FechaHora.ToString("dddd, dd 'de' MMMM 'de' yyyy 'a las' HH:mm")</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <h5><i class="fas fa-info-circle"></i> Descripción</h5>
+                            <p>@Model.Descripcion</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-ticket-alt"></i> Información de Boletos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Precio por boleto:</strong>
+                        <span class="h4 text-primary">₡@Model.PrecioBase.ToString("N2")</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Capacidad total:</strong> @Model.Capacidad personas
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Asientos ocupados:</strong> 
+                        <span class="text-danger">@Model.AsientosOcupados</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Asientos disponibles:</strong> 
+                        <span class="text-success">@Model.AsientosDisponibles</span>
+                    </div>
+                    
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-danger" role="progressbar" 
+                             style="width: @(((double)Model.AsientosOcupados / Model.Capacidad) * 100)%">
+                            @(((double)Model.AsientosOcupados / Model.Capacidad) * 100).ToString("F1")% Ocupado
+                        </div>
+                    </div>
+                    
+                    @if (Model.PuedeComprar)
+                    {
+                        <div class="d-grid">
+                            <a asp-controller="Boleto" asp-action="Comprar" asp-route-id="@Model.EventoId" 
+                               class="btn btn-primary btn-lg">
+                                <i class="fas fa-shopping-cart"></i> Comprar Boletos
+                            </a>
+                        </div>
+                    }
+                    else if (Model.EstaVendido)
+                    {
+                        <div class="alert alert-warning text-center">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Evento Vendido</strong><br>
+                            No hay asientos disponibles
+                        </div>
+                    }
+                    else if (!Model.EsProximoEvento)
+                    {
+                        <div class="alert alert-secondary text-center">
+                            <i class="fas fa-clock"></i>
+                            <strong>Evento Pasado</strong><br>
+                            Este evento ya ocurrió
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Distribución de Asientos -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-couch"></i> Distribución de Asientos</h5>
+                    <small class="text-muted">10 filas × 10 asientos = 100 personas</small>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="badge bg-dark p-2">ESCENARIO</div>
+                    </div>
+                    
+                    <div class="row justify-content-center">
+                        <div class="col-auto">
+                            <!-- Leyenda -->
+                            <div class="d-flex justify-content-center mb-3">
+                                <div class="me-3">
+                                    <span class="badge bg-success me-1">■</span> Disponible
+                                </div>
+                                <div>
+                                    <span class="badge bg-danger me-1">■</span> Ocupado
+                                </div>
+                            </div>
+                            
+                            <!-- Mapa de asientos -->
+                            <div class="asientos-container">
+                                @for (int fila = 1; fila <= 10; fila++)
+                                {
+                                    <div class="fila-asientos mb-1">
+                                        <span class="fila-numero">@fila</span>
+                                        @for (int numero = 1; numero <= 10; numero++)
+                                        {
+                                            var asiento = Model.Asientos.FirstOrDefault(a => a.Fila == fila && a.Numero == numero);
+                                            var disponible = asiento == null || !asiento.EstaOcupado;
+                                            
+                                            <span class="asiento @(disponible ? "disponible" : "ocupado")" 
+                                                  title="Fila @fila - Asiento @numero (@(disponible ? "Disponible" : "Ocupado"))">
+                                                @numero
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Acciones -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@Model.EventoId" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a asp-controller="Boleto" asp-action="EventoBoletos" asp-route-id="@Model.EventoId" class="btn btn-info">
+                            <i class="fas fa-list"></i> Ver Boletos
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.EventoId">Editar</a> |
-    <a asp-action="Index">Regresar a la lista</a>
-</div>
+
+<style>
+    .asientos-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .fila-asientos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+    }
+    
+    .fila-numero {
+        width: 30px;
+        text-align: center;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+    
+    .asiento {
+        display: inline-block;
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .asiento.disponible {
+        background-color: #28a745;
+        border: 2px solid #1e7e34;
+    }
+    
+    .asiento.disponible:hover {
+        background-color: #218838;
+        transform: scale(1.1);
+    }
+    
+    .asiento.ocupado {
+        background-color: #dc3545;
+        border: 2px solid #c82333;
+        cursor: not-allowed;
+    }
+    
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+</style>

@@ -31,6 +31,9 @@ namespace CapaAccesoADatosDAL.Repositorios.ListaEvento
 
         public async Task<CapaObjetos.Modelos.ListaEvento> CrearEventoAsync(CapaObjetos.Modelos.ListaEvento listaevento)
         {
+            if (!listaevento.Estado)
+                listaevento.Estado = true;
+                
             _context.ListaEventos.Add(listaevento);
             await _context.SaveChangesAsync();
             return listaevento;

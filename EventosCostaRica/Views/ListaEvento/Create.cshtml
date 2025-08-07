@@ -4,57 +4,131 @@
     ViewData["Title"] = "Crear Evento";
 }
 
-<h1>Crear Nuevo Evento</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-plus-circle"></i> Crear Nuevo Evento</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Nombre" class="form-label">
+                                        <i class="fas fa-tag"></i> @Html.DisplayNameFor(model => model.Nombre)
+                                    </label>
+                                    <input asp-for="Nombre" class="form-control" placeholder="Nombre del evento" />
+                                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Ubicacion" class="form-label">
+                                        <i class="fas fa-map-marker-alt"></i> @Html.DisplayNameFor(model => model.Ubicacion)
+                                    </label>
+                                    <input asp-for="Ubicacion" class="form-control" placeholder="Ubicación del evento" />
+                                    <span asp-validation-for="Ubicacion" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="Ubicacion" class="control-label"></label>
-                <input asp-for="Ubicacion" class="form-control" />
-                <span asp-validation-for="Ubicacion" class="text-danger"></span>
-            </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Descripcion" class="form-label">
+                                <i class="fas fa-align-left"></i> @Html.DisplayNameFor(model => model.Descripcion)
+                            </label>
+                            <textarea asp-for="Descripcion" class="form-control" rows="4" 
+                                      placeholder="Descripción detallada del evento"></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger"></span>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <textarea asp-for="Descripcion" class="form-control"></textarea>
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Capacidad" class="form-label">
+                                        <i class="fas fa-users"></i> @Html.DisplayNameFor(model => model.Capacidad)
+                                    </label>
+                                    <input asp-for="Capacidad" class="form-control" value="100" min="1" max="100" 
+                                           placeholder="Máximo 100 personas" />
+                                    <small class="form-text text-muted">Máximo 100 personas (10x10 asientos)</small>
+                                    <span asp-validation-for="Capacidad" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="FechaHora" class="form-label">
+                                        <i class="fas fa-calendar-alt"></i> @Html.DisplayNameFor(model => model.FechaHora)
+                                    </label>
+                                    <input asp-for="FechaHora" type="datetime-local" class="form-control" 
+                                           min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                                    <span asp-validation-for="FechaHora" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="PrecioBase" class="form-label">
+                                        <i class="fas fa-dollar-sign"></i> @Html.DisplayNameFor(model => model.PrecioBase)
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">₡</span>
+                                        <input asp-for="PrecioBase" class="form-control" step="0.01" min="0.01" 
+                                               placeholder="0.00" />
+                                    </div>
+                                    <span asp-validation-for="PrecioBase" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="Capacidad" class="control-label"></label>
-                <input asp-for="Capacidad" class="form-control" />
-                <span asp-validation-for="Capacidad" class="text-danger"></span>
-            </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Banner" class="form-label">
+                                        <i class="fas fa-image"></i> @Html.DisplayNameFor(model => model.Banner)
+                                    </label>
+                                    <input asp-for="Banner" type="url" class="form-control" 
+                                           placeholder="https://ejemplo.com/imagen.jpg" />
+                                    <small class="form-text text-muted">URL de la imagen del banner (opcional)</small>
+                                    <span asp-validation-for="Banner" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Estado" class="form-label">
+                                        <i class="fas fa-toggle-on"></i> @Html.DisplayNameFor(model => model.Estado)
+                                    </label>
+                                    <select asp-for="Estado" class="form-select">
+                                        <option value="true" selected>Activo</option>
+                                        <option value="false">Inactivo</option>
+                                    </select>
+                                    <span asp-validation-for="Estado" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="FechaHora" class="control-label"></label>
-                <input asp-for="FechaHora" class="form-control" />
-                <span asp-validation-for="FechaHora" class="text-danger"></span>
-            </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Información:</strong> Al crear el evento, se generarán automáticamente 100 asientos distribuidos en 10 filas de 10 asientos cada una.
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <select asp-for="Estado" class="form-control">
-                    <option value="true">Activo</option>
-                    <option value="false">Inactivo</option>
-                </select>
-                <span asp-validation-for="Estado" class="text-danger"></span>
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Crear Evento
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -62,4 +136,21 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    
+    <script>
+        // Establecer fecha mínima como ahora
+        document.addEventListener('DOMContentLoaded', function() {
+            const fechaInput = document.querySelector('input[type="datetime-local"]');
+            if (fechaInput) {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                
+                fechaInput.min = `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+        });
+    </script>
 }

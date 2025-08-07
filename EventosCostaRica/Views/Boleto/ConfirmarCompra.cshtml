@@ -1,0 +1,186 @@
+@model CapaObjetos.ViewModelos.ComprarBoletoViewModelo
+
+@{
+    ViewData["Title"] = "Confirmar Compra";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3><i class="fas fa-shopping-cart"></i> Confirmar Compra</h3>
+                    <p class="mb-0 text-muted">Revise los detalles de su compra antes de proceder al pago</p>
+                </div>
+                <div class="card-body">
+                    <!-- Información del evento -->
+                    <div class="mb-4">
+                        <h5><i class="fas fa-calendar-alt"></i> Información del Evento</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Evento:</strong> @Model.Evento.Nombre
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Fecha:</strong> @Model.Evento.FechaHora.ToString("dd/MM/yyyy HH:mm")
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Ubicación:</strong> @Model.Evento.Ubicacion
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Precio por boleto:</strong> ₡@Model.Evento.PrecioBase.ToString("N2")
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen de asientos seleccionados -->
+                    <div class="mb-4">
+                        <h5><i class="fas fa-chair"></i> Asientos Seleccionados</h5>
+                        <div class="row">
+                            @foreach (var asientoId in Model.AsientosSeleccionados)
+                            {
+                                var asiento = Model.Asientos.FirstOrDefault(a => a.AsientoId == asientoId);
+                                if (asiento != null)
+                                {
+                                    <div class="col-md-3 mb-2">
+                                        <span class="badge bg-primary p-2">
+                                            <i class="fas fa-chair"></i> Fila @asiento.Fila - Asiento @asiento.Numero
+                                        </span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Resumen de pago -->
+                    <div class="mb-4">
+                        <h5><i class="fas fa-calculator"></i> Resumen de Pago</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Cantidad de boletos:</strong></td>
+                                        <td class="text-end">@Model.AsientosSeleccionados.Count</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Precio por boleto:</strong></td>
+                                        <td class="text-end">₡@Model.Evento.PrecioBase.ToString("N2")</td>
+                                    </tr>
+                                    <tr class="table-primary">
+                                        <td><strong>Total a pagar:</strong></td>
+                                        <td class="text-end"><strong>₡@Model.PrecioTotal.ToString("N2")</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Información de pago -->
+                    <div class="mb-4">
+                        <h5><i class="fas fa-credit-card"></i> Método de Pago</h5>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> 
+                            <strong>Pago simulado:</strong> Este es un sistema de demostración. 
+                            No se procesará ningún pago real.
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="metodoPago" id="tarjeta" value="tarjeta" checked>
+                            <label class="form-check-label" for="tarjeta">
+                                <i class="fas fa-credit-card"></i> Tarjeta de Crédito/Débito
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="metodoPago" id="sinpe" value="sinpe">
+                            <label class="form-check-label" for="sinpe">
+                                <i class="fas fa-mobile-alt"></i> SINPE Móvil
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Términos y condiciones -->
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="aceptoTerminos" required>
+                            <label class="form-check-label" for="aceptoTerminos">
+                                Acepto los <a href="#" data-bs-toggle="modal" data-bs-target="#terminosModal">términos y condiciones</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Comprar" asp-route-id="@Model.EventoId" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Modificar Selección
+                        </a>
+                        
+                        <form asp-action="ProcesarPago" method="post" style="display: inline;">
+                            <input type="hidden" asp-for="EventoId" />
+                            <input type="hidden" asp-for="UsuarioId" />
+                            @for (int i = 0; i < Model.AsientosSeleccionados.Count; i++)
+                            {
+                                <input type="hidden" name="AsientosSeleccionados[@i]" value="@Model.AsientosSeleccionados[i]" />
+                            }
+                            
+                            <button type="submit" class="btn btn-success btn-lg" id="btnProcesarPago" disabled>
+                                <i class="fas fa-lock"></i> Procesar Pago (₡@Model.PrecioTotal.ToString("N2"))
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Términos y Condiciones -->
+<div class="modal fade" id="terminosModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Términos y Condiciones</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>1. Compra de Boletos</h6>
+                <p>Los boletos son válidos únicamente para el evento, fecha y asientos especificados.</p>
+                
+                <h6>2. Política de Devoluciones</h6>
+                <p>Las devoluciones solo se aceptan con 48 horas de anticipación al evento.</p>
+                
+                <h6>3. Responsabilidades</h6>
+                <p>El organizador no se hace responsable por objetos perdidos o dañados durante el evento.</p>
+                
+                <h6>4. Código de Conducta</h6>
+                <p>Los asistentes deben mantener un comportamiento apropiado durante el evento.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxTerminos = document.getElementById('aceptoTerminos');
+    const btnProcesarPago = document.getElementById('btnProcesarPago');
+    
+    checkboxTerminos.addEventListener('change', function() {
+        btnProcesarPago.disabled = !this.checked;
+    });
+});
+</script>
+
+<style>
+.badge {
+    font-size: 0.9em;
+}
+
+.table td {
+    padding: 0.75rem;
+}
+
+.table-primary td {
+    font-size: 1.1em;
+}
+</style> 

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using CapaLogicaDeNegocioBLL.Servicios.Usuario;
+using CapaLogicaDeNegocioBLL.Servicios.Role;
 using CapaObjetos.ViewModelos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -17,18 +19,20 @@ namespace EventosCostaRica.Controllers
     public class AccountController : Controller
     {
         private readonly IUsuarioService _usuarioService;
+        private readonly IRoleService _roleService;
         private readonly IMapper _mapper;
         private readonly PasswordHasher<UsuarioViewModelo> _passwordHasher;
 
-        public AccountController(IUsuarioService usuarioService, IMapper mapper)
+        public AccountController(IUsuarioService usuarioService, IRoleService roleService, IMapper mapper)
         {
             _usuarioService = usuarioService;
+            _roleService = roleService;
             _mapper = mapper;
             _passwordHasher = new PasswordHasher<UsuarioViewModelo>();
         }
 
         [HttpGet]
-        public IActionResult Login(string returnUrl = null)
+        public IActionResult Login(string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -36,23 +40,30 @@ namespace EventosCostaRica.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel vm, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel vm, string? returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(vm);
 
             var userVm = await _usuarioService.ObtenerUsuarioPorEmailAsync(vm.Email);
-            if (userVm != null)
+            if (userVm != null && userVm.Estado) // Verificar que el usuario esté activo
             {
                 var verifyResult = _passwordHasher.VerifyHashedPassword(userVm, userVm.Password, vm.Password);
                 if (verifyResult == PasswordVerificationResult.Success)
                 {
+                    // Obtener el nombre del rol
+                    var roles = await _roleService.ObtenerRolesAsync();
+                    var rolUsuario = roles.FirstOrDefault(r => r.RolID == userVm.Rol);
+                    string nombreRol = rolUsuario?.Nombre ?? "Usuario";
+
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, userVm.UsuarioId.ToString()),
                         new Claim(ClaimTypes.Name, userVm.Nombre),
-                        new Claim(ClaimTypes.Role, userVm.Rol.ToString())
+                        new Claim(ClaimTypes.Role, nombreRol),
+                        new Claim("Rol", nombreRol) // Claim adicional para acceso fácil
                     };
+
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var principal = new ClaimsPrincipal(identity);
 
@@ -62,7 +73,7 @@ namespace EventosCostaRica.Controllers
                         new AuthenticationProperties { IsPersistent = vm.RememberMe }
                     );
 
-                    return Redirect(returnUrl ?? Url.Action("Index", "Home"));
+                    return Redirect(returnUrl ?? Url.Action("Index", "Home") ?? "/");
                 }
             }
 

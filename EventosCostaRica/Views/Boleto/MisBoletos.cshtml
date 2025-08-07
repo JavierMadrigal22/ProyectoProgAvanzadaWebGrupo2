@@ -1,0 +1,127 @@
+@model List<CapaObjetos.ViewModelos.BoletoViewModelo>
+
+@{
+    ViewData["Title"] = "Mis Boletos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-ticket-alt"></i> Mis Boletos</h2>
+        <a asp-controller="ListaEvento" asp-action="ProximosEventos" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Comprar más boletos
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var boleto in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="badge @(boleto.Estado ? "bg-success" : "bg-danger")">
+                                @(boleto.Estado ? "Válido" : "Cancelado")
+                            </span>
+                            <small class="text-muted">#@boleto.BoletoId</small>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@boleto.NombreEvento</h5>
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar"></i> 
+                                    @DateTime.Parse(boleto.FechaCompra.ToString()).ToString("dd/MM/yyyy HH:mm")
+                                </small>
+                            </div>
+                            <p class="card-text">
+                                <strong><i class="fas fa-couch"></i> Asiento:</strong> @boleto.InformacionAsiento<br>
+                                <strong><i class="fas fa-dollar-sign"></i> Precio:</strong> ₡@boleto.Precio.ToString("N2")
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-grid">
+                                <a asp-action="Details" asp-route-id="@boleto.BoletoId" 
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye"></i> Ver Detalles
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <!-- Resumen -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <h4 class="text-primary">@Model.Count()</h4>
+                                <small class="text-muted">Total de Boletos</small>
+                            </div>
+                            <div class="col-md-3">
+                                <h4 class="text-success">@Model.Count(b => b.Estado)</h4>
+                                <small class="text-muted">Boletos Válidos</small>
+                            </div>
+                            <div class="col-md-3">
+                                <h4 class="text-info">@Model.GroupBy(b => b.EventoId).Count()</h4>
+                                <small class="text-muted">Eventos Diferentes</small>
+                            </div>
+                            <div class="col-md-3">
+                                <h4 class="text-warning">₡@Model.Where(b => b.Estado).Sum(b => b.Precio).ToString("N2")</h4>
+                                <small class="text-muted">Total Invertido</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-5">
+            <div class="mb-4">
+                <i class="fas fa-ticket-alt fa-5x text-muted"></i>
+            </div>
+            <h4 class="text-muted">No tienes boletos aún</h4>
+            <p class="text-muted">¡Explora nuestros próximos eventos y compra tu primer boleto!</p>
+            <a asp-controller="ListaEvento" asp-action="ProximosEventos" class="btn btn-primary">
+                <i class="fas fa-search"></i> Ver Próximos Eventos
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+</style>
