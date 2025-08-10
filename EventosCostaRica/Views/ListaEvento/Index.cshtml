@@ -1,42 +1,64 @@
 ﻿@model IEnumerable<CapaObjetos.ViewModelos.ListaEventoViewModelo>
 
 @{
-    ViewData["Title"] = "Lista de Eventos";
+    ViewData["Title"] = "Gestión de Eventos";
 }
 
-<h1>Administración de Eventos</h1>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h2><i class="fas fa-calendar-check me-2"></i> @ViewData["Title"]</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i> Nuevo Evento
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Crear Nuevo Evento</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
-            <th>@Html.DisplayNameFor(model => model.Ubicacion)</th>
-            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
-            <th>@Html.DisplayNameFor(model => model.Capacidad)</th>
-            <th>@Html.DisplayNameFor(model => model.FechaHora)</th>
-            <th>@Html.DisplayNameFor(model => model.Estado)</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
-                <td>@Html.DisplayFor(modelItem => item.Ubicacion)</td>
-                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
-                <td>@Html.DisplayFor(modelItem => item.Capacidad)</td>
-                <td>@Html.DisplayFor(modelItem => item.FechaHora)</td>
-                <td>@(item.Estado ? "Activo" : "Inactivo")</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.EventoId">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.EventoId">Detalles</a> |
-                    <a asp-action="Delete" asp-route-id="@item.EventoId">Eliminar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="card border-0 shadow-soft">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="bg-gothic text-white">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Ubicación</th>
+                            <th>Fecha</th>
+                            <th>Capacidad</th>
+                            <th>Precio</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Nombre</td>
+                                <td>@item.Ubicacion</td>
+                                <td>@item.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@item.Capacidad</td>
+                                <td>₡@item.PrecioBase.ToString("N2")</td>
+                                <td>
+                                    <span class="badge @(item.Estado ? "bg-opal" : "bg-light-orchid")">
+                                        @(item.Estado ? "Activo" : "Inactivo")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a asp-action="Edit" asp-route-id="@item.EventoId" class="btn btn-sm btn-outline-gothic">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.EventoId" class="btn btn-sm btn-outline-gothic">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.EventoId" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

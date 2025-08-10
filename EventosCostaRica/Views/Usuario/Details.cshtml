@@ -1,66 +1,109 @@
 ﻿@model CapaObjetos.ViewModelos.UsuarioViewModelo
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de Usuario";
 }
 
-<h1>Detalles De Usuario</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-soft">
+                <div class="card-header bg-gothic text-white">
+                    <h3 class="mb-0"><i class="fas fa-user me-2"></i> Detalles de Usuario</h3>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-aqua-squeeze h-100">
+                                <label class="form-label text-muted small mb-1">
+                                    <i class="fas fa-id-card me-2"></i> Nombre
+                                </label>
+                                <p class="h5 mb-0">@Model.Nombre</p>
+                            </div>
+                        </div>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-aqua-squeeze h-100">
+                                <label class="form-label text-muted small mb-1">
+                                    <i class="fas fa-id-card me-2"></i> Apellido
+                                </label>
+                                <p class="h5 mb-0">@Model.Apellido</p>
+                            </div>
+                        </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Apellido)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Apellido)
-        </dd>
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-aqua-squeeze h-100">
+                                <label class="form-label text-muted small mb-1">
+                                    <i class="fas fa-envelope me-2"></i> Email
+                                </label>
+                                <p class="mb-0">@Model.Email</p>
+                            </div>
+                        </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-aqua-squeeze h-100">
+                                <label class="form-label text-muted small mb-1">
+                                    <i class="fas fa-phone me-2"></i> Teléfono
+                                </label>
+                                <p class="mb-0">@Model.Telefono</p>
+                            </div>
+                        </div>
+                    </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-        <dd class="col-sm-10">
-            <input type="password" class="form-control-plaintext" value="@Model.Password" readonly />
-        </dd>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-aqua-squeeze h-100">
+                                <label class="form-label text-muted small mb-1">
+                                    <i class="fas fa-user-tag me-2"></i> Rol
+                                </label>
+                                <p class="mb-0">
+                                    @if (Model.Rol == 1)
+                                    {
+                                        <span class="badge bg-gothic">Administrador</span>
+                                    }
+                                    else if (Model.Rol == 2)
+                                    {
+                                        <span class="badge bg-opal">Cliente</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light-orchid">Desconocido</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Rol)
-        </dt>
-        <dd class="col-sm-10">
-            @(Model.Rol == 1 ? "Administrador" : Model.Rol == 2 ? "Cliente" : "Desconocido")
-        </dd>
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-aqua-squeeze h-100">
+                                <label class="form-label text-muted small mb-1">
+                                    <i class="fas fa-toggle-on me-2"></i> Estado
+                                </label>
+                                <p class="mb-0">
+                                    @if (Model.Estado)
+                                    {
+                                        <span class="badge bg-opal">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light-orchid">Inactivo</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefono)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Telefono)
-        </dd>
-
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class="col-sm-10">
-            @(Model.Estado ? "Activo" : "Inactivo")
-        </dd>
-    </dl>
-</div>
-
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.UsuarioId">Editar</a> |
-    <a asp-action="Index">Regresar</a>
+                    <div class="d-flex justify-content-between flex-wrap gap-3">
+                        <a asp-action="Index" class="btn btn-outline-gothic">
+                            <i class="fas fa-arrow-left me-2"></i> Volver
+                        </a>
+                        <div class="d-flex gap-3">
+                            <a asp-action="Edit" asp-route-id="@Model.UsuarioId" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i> Editar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

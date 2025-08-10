@@ -4,60 +4,58 @@
     ViewData["Title"] = "Pago Exitoso";
 }
 
-<div class="container mt-4">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card border-success">
-                <div class="card-header bg-success text-white text-center">
-                    <h3><i class="fas fa-check-circle"></i> ¡Pago Procesado Exitosamente!</h3>
-                    <p class="mb-0">Su compra ha sido confirmada y sus boletos están listos</p>
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-soft border-success">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <h3 class="mb-0"><i class="fas fa-check-circle me-2"></i> ¡Pago Procesado Exitosamente!</h3>
+                    <p class="mb-0">Tu compra ha sido confirmada</p>
                 </div>
-                <div class="card-body">
-                    
-                    <!-- Mensaje de éxito -->
-                    <div class="alert alert-success text-center mb-4">
-                        <i class="fas fa-ticket-alt fa-2x mb-2"></i>
-                        <h5>¡Felicitaciones!</h5>
-                        <p class="mb-0">Ha adquirido <strong>@Model.Count boleto(s)</strong> exitosamente.</p>
+                <div class="card-body p-4 p-md-5">
+                    <div class="alert alert-success text-center mb-5">
+                        <i class="fas fa-ticket-alt fa-2x mb-3 text-success"></i>
+                        <h5 class="mb-2">¡Felicitaciones!</h5>
+                        <p class="mb-0">Has adquirido <strong>@Model.Count boleto(s)</strong> exitosamente.</p>
                         <p class="mb-0">Total pagado: <strong>₡@Model.Sum(b => b.Precio).ToString("N2")</strong></p>
                     </div>
 
-                    <!-- Información del evento -->
                     @if (Model.Any())
                     {
                         var primerBoleto = Model.First();
-                        <div class="mb-4">
-                            <h5><i class="fas fa-calendar-alt"></i> Información del Evento</h5>
-                            <div class="row">
+                        <div class="mb-5">
+                            <h5 class="text-gothic mb-3"><i class="fas fa-calendar-alt me-2"></i> Información del Evento</h5>
+                            <div class="row g-3">
                                 <div class="col-md-6">
-                                    <strong>Evento:</strong> @primerBoleto.NombreEvento
+                                    <p class="mb-1"><strong>Evento:</strong></p>
+                                    <p>@primerBoleto.NombreEvento</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <strong>Fecha de compra:</strong> @primerBoleto.FechaCompra.ToString("dd/MM/yyyy HH:mm")
+                                    <p class="mb-1"><strong>Fecha de compra:</strong></p>
+                                    <p>@primerBoleto.FechaCompra.ToString("dd/MM/yyyy HH:mm")</p>
                                 </div>
                             </div>
                         </div>
                     }
 
-                    <!-- Boletos adquiridos -->
-                    <div class="mb-4">
-                        <h5><i class="fas fa-tickets-alt"></i> Sus Boletos</h5>
-                        <div class="row">
+                    <div class="mb-5">
+                        <h5 class="text-gothic mb-3"><i class="fas fa-ticket-alt me-2"></i> Tus Boletos</h5>
+                        <div class="row g-3">
                             @foreach (var boleto in Model)
                             {
-                                <div class="col-md-6 col-lg-4 mb-3">
-                                    <div class="card bg-light">
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card bg-aqua-squeeze border-0 h-100">
                                         <div class="card-body text-center">
-                                            <h6 class="card-title">
-                                                <i class="fas fa-ticket-alt text-primary"></i> 
-                                                Boleto #@boleto.BoletoId
+                                            <h6 class="card-title text-gothic">
+                                                <i class="fas fa-ticket-alt me-2"></i>
+                                                #@boleto.BoletoId
                                             </h6>
                                             <p class="card-text">
-                                                <strong>Fila @boleto.FilaAsiento - Asiento @boleto.NumeroAsiento</strong><br>
+                                                <strong>@boleto.InformacionAsiento</strong><br>
                                                 <span class="text-muted">₡@boleto.Precio.ToString("N2")</span>
                                             </p>
                                             <span class="badge bg-success">
-                                                <i class="fas fa-check"></i> Confirmado
+                                                <i class="fas fa-check me-1"></i> Confirmado
                                             </span>
                                         </div>
                                     </div>
@@ -66,60 +64,51 @@
                         </div>
                     </div>
 
-                    <!-- Información importante -->
-                    <div class="mb-4">
-                        <h5><i class="fas fa-info-circle"></i> Información Importante</h5>
-                        <div class="alert alert-info">
+                    <div class="mb-5">
+                        <h5 class="text-gothic mb-3"><i class="fas fa-info-circle me-2"></i> Instrucciones</h5>
+                        <div class="alert alert-edgewater">
                             <ul class="mb-0">
-                                <li><strong>Llegada temprana:</strong> Se recomienda llegar 30 minutos antes del evento</li>
-                                <li><strong>Identificación:</strong> Presente su cédula o identificación al ingresar</li>
-                                <li><strong>Boletos digitales:</strong> Puede acceder a sus boletos desde "Mis Boletos"</li>
-                                <li><strong>Política de devolución:</strong> Devoluciones hasta 48 horas antes del evento</li>
+                                <li><strong>Llegada temprana:</strong> Se recomienda llegar 30 minutos antes</li>
+                                <li><strong>Identificación:</strong> Presente su cédula al ingresar</li>
+                                <li><strong>Boletos digitales:</strong> Puede acceder desde "Mis Boletos"</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- Códigos QR (simulados) -->
-                    <div class="mb-4">
-                        <h5><i class="fas fa-qrcode"></i> Códigos de Acceso</h5>
-                        <div class="alert alert-warning">
-                            <i class="fas fa-mobile-alt"></i> 
-                            <strong>Consejo:</strong> Guarde sus boletos en "Mis Boletos" para acceso fácil el día del evento.
-                            Cada boleto incluye un código QR único para el ingreso.
+                    <div class="mb-5">
+                        <h5 class="text-gothic mb-3"><i class="fas fa-qrcode me-2"></i> Códigos QR</h5>
+                        <div class="alert alert-edgewater">
+                            <i class="fas fa-mobile-alt me-2"></i>
+                            <strong>Consejo:</strong> Guarde sus boletos en "Mis Boletos" para acceso fácil.
                         </div>
                     </div>
 
-                    <!-- Botones de acción -->
-                    <div class="text-center">
-                        <div class="row">
-                            <div class="col-md-4 mb-2">
-                                <a asp-action="MisBoletos" class="btn btn-primary btn-block w-100">
-                                    <i class="fas fa-ticket-alt"></i> Ver Mis Boletos
-                                </a>
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <a asp-controller="ListaEvento" asp-action="ProximosEventos" class="btn btn-outline-primary btn-block w-100">
-                                    <i class="fas fa-calendar"></i> Más Eventos
-                                </a>
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <button type="button" class="btn btn-outline-secondary btn-block w-100" onclick="window.print()">
-                                    <i class="fas fa-print"></i> Imprimir
-                                </button>
-                            </div>
+                    <div class="row g-3 text-center">
+                        <div class="col-md-4">
+                            <a asp-action="MisBoletos" class="btn btn-primary w-100 py-3">
+                                <i class="fas fa-ticket-alt me-2"></i> Mis Boletos
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-controller="ListaEvento" asp-action="ProximosEventos" class="btn btn-outline-gothic w-100 py-3">
+                                <i class="fas fa-calendar me-2"></i> Más Eventos
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-outline-secondary w-100 py-3" onclick="window.print()">
+                                <i class="fas fa-print me-2"></i> Imprimir
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Información de contacto -->
-                    <div class="mt-4">
-                        <div class="alert alert-light text-center">
+                    <div class="mt-5 text-center">
+                        <div class="alert alert-aqua-squeeze">
                             <small class="text-muted">
-                                <i class="fas fa-envelope"></i> ¿Necesita ayuda? Contáctenos: info@eventoscr.com | 
-                                <i class="fas fa-phone"></i> Tel: 2222-3333
+                                <i class="fas fa-envelope me-2"></i> ¿Necesita ayuda? info@eventoscr.com |
+                                <i class="fas fa-phone me-2"></i> Tel: 2222-3333
                             </small>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
@@ -127,27 +116,35 @@
 </div>
 
 <style>
-@@media print {
-    .btn, .alert-light {
-        display: none !important;
-    }
-    
-    .card {
-        border: 1px solid #000 !important;
-        box-shadow: none !important;
-    }
-}
+    @@media print {
+        .btn, .alert-aqua-squeeze {
+            display: none !important;
+        }
 
-.card-body .row .col-md-4 .btn {
-    min-height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .card {
+            border: 1px solid #ddd !important;
+            box-shadow: none !important;
+        }
+    }
+
+    .alert-aqua-squeeze {
+        background-color: var(--aqua-squeeze);
+        border: 1px solid var(--edgewater);
+    }
+
+    .card-body .row .col-md-4 .btn {
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 </style>
 
+@section Scripts {
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-</script> 
+    document.addEventListener('DOMContentLoaded', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+}

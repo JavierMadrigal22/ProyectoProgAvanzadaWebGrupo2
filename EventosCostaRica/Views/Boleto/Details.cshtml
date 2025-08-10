@@ -2,111 +2,107 @@
 
 @{
     ViewData["Title"] = "Detalle del Boleto";
+    Layout = "_Layout";
 }
 
-<div class="container mt-4">
+<div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header text-center bg-primary text-white">
-                    <h3><i class="fas fa-ticket-alt"></i> Boleto Digital</h3>
-                    <p class="mb-0">Boleto #@Model.BoletoId</p>
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-soft">
+                <div class="card-header bg-gothic text-white text-center py-4">
+                    <h3 class="mb-0"><i class="fas fa-ticket-alt me-2"></i> Boleto Digital</h3>
+                    <p class="mb-0">#@Model.BoletoId</p>
                 </div>
-                <div class="card-body">
-                    <!-- Estado del boleto -->
+                <div class="card-body p-4 p-md-5">
                     <div class="text-center mb-4">
-                        <span class="badge @(Model.Estado ? "bg-success" : "bg-danger") p-2">
-                            @(Model.Estado ? "BOLETO VÁLIDO" : "BOLETO CANCELADO")
+                        <span class="badge @(Model.Estado ? "bg-opal" : "bg-light-orchid") p-2 px-3">
+                            @(Model.Estado ? "VÁLIDO" : "CANCELADO")
                         </span>
                     </div>
-                    
-                    <!-- Información del evento -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h4 class="text-center text-primary">@Model.NombreEvento</h4>
-                            <hr>
+
+                    <div class="text-center mb-5">
+                        <h4 class="text-gothic">@Model.NombreEvento</h4>
+                        <hr class="border-gothic opacity-25">
+                    </div>
+
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-aqua-squeeze h-100">
+                                <label class="form-label text-muted small mb-1">
+                                    <i class="fas fa-chair me-2"></i> Asiento
+                                </label>
+                                <p class="h5 mb-0">@Model.InformacionAsiento</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-aqua-squeeze h-100">
+                                <label class="form-label text-muted small mb-1">
+                                    <i class="fas fa-dollar-sign me-2"></i> Precio
+                                </label>
+                                <p class="h5 text-gothic mb-0">₡@Model.Precio.ToString("N2")</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-aqua-squeeze h-100">
+                                <label class="form-label text-muted small mb-1">
+                                    <i class="fas fa-calendar me-2"></i> Fecha de Compra
+                                </label>
+                                <p class="mb-0">@Model.FechaCompra.ToString("dd/MM/yyyy")</p>
+                                <small class="text-muted">@Model.FechaCompra.ToString("HH:mm")</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 bg-aqua-squeeze h-100">
+                                <label class="form-label text-muted small mb-1">
+                                    <i class="fas fa-user me-2"></i> Titular
+                                </label>
+                                <p class="mb-0">@Model.NombreUsuario</p>
+                            </div>
                         </div>
                     </div>
-                    
-                    <!-- Detalles del boleto -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label text-muted">
-                                    <i class="fas fa-couch"></i> Información del Asiento
-                                </label>
-                                <p class="h5">@Model.InformacionAsiento</p>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label text-muted">
-                                    <i class="fas fa-dollar-sign"></i> Precio Pagado
-                                </label>
-                                <p class="h5 text-success">₡@Model.Precio.ToString("N2")</p>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label text-muted">
-                                    <i class="fas fa-calendar-alt"></i> Fecha de Compra
-                                </label>
-                                <p class="h6">@Model.FechaCompra.ToString("dddd, dd 'de' MMMM 'de' yyyy")</p>
-                                <p class="text-muted">@Model.FechaCompra.ToString("HH:mm")</p>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label text-muted">
-                                    <i class="fas fa-user"></i> Titular
-                                </label>
-                                <p class="h6">@Model.NombreUsuario</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Código QR simulado -->
-                    <div class="text-center mb-4">
-                        <div class="border p-3 d-inline-block bg-light">
-                            <i class="fas fa-qrcode fa-4x text-muted"></i>
+
+                    <div class="text-center mb-5">
+                        <div class="border rounded p-3 d-inline-block bg-aqua-squeeze">
+                            <i class="fas fa-qrcode fa-4x text-gothic opacity-75"></i>
                             <p class="mt-2 mb-0 small text-muted">Código de verificación</p>
-                            <p class="font-monospace">BOL-@Model.BoletoId-@Model.EventoId</p>
+                            <p class="font-monospace mb-0">BOL-@Model.BoletoId-@Model.EventoId</p>
                         </div>
                     </div>
-                    
-                    <!-- Instrucciones -->
-                    <div class="alert alert-info">
-                        <h6><i class="fas fa-info-circle"></i> Instrucciones Importantes:</h6>
-                        <ul class="mb-0">
-                            <li>Presente este boleto digital o impreso en la entrada del evento</li>
+
+                    <div class="alert alert-edgewater mb-5">
+                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i> Instrucciones:</h6>
+                        <ul class="mb-0 ps-3">
+                            <li>Presente este boleto digital o impreso en la entrada</li>
                             <li>Llegue 30 minutos antes del inicio del evento</li>
                             <li>Este boleto no es transferible</li>
-                            <li>En caso de cancelación del evento, se reembolsará el monto completo</li>
                         </ul>
                     </div>
-                    
-                    <!-- Información de contacto -->
+
                     <div class="text-center text-muted small">
                         <p class="mb-1">Para dudas o consultas:</p>
                         <p class="mb-0">
-                            <i class="fas fa-envelope"></i> eventos@costarica.com | 
-                            <i class="fas fa-phone"></i> +506 2000-0000
+                            <i class="fas fa-envelope me-2"></i> eventos@costarica.com |
+                            <i class="fas fa-phone me-2"></i> +506 2000-0000
                         </p>
                     </div>
                 </div>
-                
-                <div class="card-footer bg-light">
-                    <div class="d-flex justify-content-between">
-                        <a asp-action="MisBoletos" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Volver a Mis Boletos
+
+                <div class="card-footer bg-aqua-squeeze border-0">
+                    <div class="d-flex justify-content-between flex-wrap gap-3">
+                        <a asp-action="MisBoletos" class="btn btn-outline-gothic">
+                            <i class="fas fa-arrow-left me-2"></i> Mis Boletos
                         </a>
-                        
-                        <div>
-                            <button onclick="window.print()" class="btn btn-outline-primary">
-                                <i class="fas fa-print"></i> Imprimir
+
+                        <div class="d-flex gap-3">
+                            <button onclick="window.print()" class="btn btn-outline-gothic">
+                                <i class="fas fa-print me-2"></i> Imprimir
                             </button>
-                            <a asp-controller="ListaEvento" asp-action="Details" asp-route-id="@Model.EventoId" 
-                               class="btn btn-outline-info">
-                                <i class="fas fa-eye"></i> Ver Evento
+                            <a asp-controller="ListaEvento" asp-action="Details" asp-route-id="@Model.EventoId"
+                               class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i> Ver Evento
                             </a>
                         </div>
                     </div>
@@ -121,32 +117,36 @@
         body * {
             visibility: hidden;
         }
+
         .card, .card * {
             visibility: visible;
         }
+
         .card {
             position: absolute;
             left: 0;
             top: 0;
             width: 100% !important;
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
         }
+
         .btn, .card-footer {
             display: none !important;
         }
     }
-    
-    .card {
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        border: none;
-    }
-    
+
     .font-monospace {
         font-family: 'Courier New', monospace;
         font-weight: bold;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
     }
-    
-    .fa-qrcode {
-        color: #6c757d;
+
+    hr.border-gothic {
+        border-top: 2px solid var(--gothic);
+    }
+
+    body {
+        padding-bottom: 100px !important;
     }
 </style>

@@ -41,10 +41,10 @@ namespace CapaObjetos.ViewModelos
 
         [Display(Name = "Estado")]
         public bool Estado { get; set; }
-        
+
         [Display(Name = "Banner")]
-        public string Banner { get; set; } = string.Empty;
-        
+        public string? Banner { get; set; }
+
         [Required(ErrorMessage = "El precio base es requerido")]
         [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor a 0")]
         [Display(Name = "Precio Base")]

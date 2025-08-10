@@ -1,8 +1,107 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<CapaObjetos.ViewModelos.ListaEventoViewModelo>
+
+@{
+    ViewData["Title"] = "Eventos Costa Rica";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Bienvenido a Eventos CostaRica</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold mb-3">Descubre eventos increíbles</h1>
+        <p class="lead text-opal">Encuentra experiencias que nunca olvidarás</p>
+    </div>
+
+    <div class="text-center mt-5">
+        <a asp-controller="ListaEvento" asp-action="ProximosEventos" class="btn btn-primary px-4 py-2">
+            <i class="fas fa-calendar-alt me-2"></i> Ver Todos los Eventos
+        </a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            <div class="col-12">
+                <h2 class="fw-semibold mb-4"><i class="fas fa-calendar-check me-2"></i>Próximos Eventos</h2>
+            </div>
+
+            @foreach (var evento in Model.OrderBy(e => e.FechaHora).Take(3))
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 border-0">
+                        @if (!string.IsNullOrEmpty(evento.Banner))
+                        {
+                            <img src="@evento.Banner" class="card-img-top" alt="@evento.Nombre" style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-opal d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-calendar-alt fa-3x text-white"></i>
+                            </div>
+                        }
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">@evento.Nombre</h5>
+                            <span class="badge bg-light-orchid text-white">
+                                @((evento.FechaHora - DateTime.Now).Days == 0 ? "HOY" :
+                                                            (evento.FechaHora - DateTime.Now).Days == 1 ? "MAÑANA" :
+                                                            $"En {(evento.FechaHora - DateTime.Now).Days} días")
+                        </span>
+                    </div>
+
+                            <p class="text-muted small mb-2">
+                                <i class="fas fa-map-marker-alt me-1"></i> @evento.Ubicacion
+                            </p>
+
+                            <p class="text-muted small mb-3">
+                                <i class="fas fa-calendar-day me-1"></i>
+                                @evento.FechaHora.ToString("dddd, dd MMMM yyyy")<br>
+                                <i class="fas fa-clock me-1"></i> @evento.FechaHora.ToString("HH:mm")
+                            </p>
+
+                            <p class="card-text text-truncate-3">@evento.Descripcion</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pt-0">
+                            <div class="d-grid">
+                                <a asp-controller="ListaEvento" asp-action="Details" asp-route-id="@evento.EventoId"
+                                   class="btn btn-primary">
+                                    Ver Detalles
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-calendar-times fa-4x text-opal"></i>
+            </div>
+            <h3 class="text-gothic mb-3">No hay eventos próximos</h3>
+            <p class="text-muted mb-4">Pronto tendremos nuevas experiencias para ti</p>
+            @if (User.IsInRole("Administrador"))
+            {
+                <a asp-controller="ListaEvento" asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i> Crear Evento
+                </a>
+            }
+        </div>
+    }
 </div>
+
+<style>
+    .text-truncate-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card-img-top {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+</style>

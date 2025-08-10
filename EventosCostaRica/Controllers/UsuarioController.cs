@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EventosCostaRica.Controllers
 {
-    [Authorize(Roles = "1")]
+    [Authorize(Roles = "Administrador")]
     public class UsuarioController : Controller
     {
         private readonly IUsuarioService _usuarioService;

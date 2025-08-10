@@ -4,156 +4,155 @@
     ViewData["Title"] = "Editar Evento";
 }
 
-<div class="container mt-4">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-edit"></i> Editar Evento</h3>
-                    <p class="mb-0 text-muted">ID: @Model.EventoId</p>
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-soft">
+                <div class="card-header bg-gothic text-white py-4">
+                    <h3 class="mb-0"><i class="fas fa-edit me-2"></i> Editar Evento</h3>
+                    <p class="mb-0 small">ID: @Model.EventoId</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4 p-md-5">
                     <form asp-action="Edit">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
                         <input type="hidden" asp-for="EventoId" />
                         <input type="hidden" asp-for="FechaCreacion" />
 
-                        <div class="row">
+                        <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Nombre" class="form-label">
-                                        <i class="fas fa-tag"></i> @Html.DisplayNameFor(model => model.Nombre)
+                                <div class="form-group">
+                                    <label asp-for="Nombre" class="form-label fw-semibold">
+                                        <i class="fas fa-tag text-gothic me-2"></i>Nombre del Evento
                                     </label>
                                     <input asp-for="Nombre" class="form-control" placeholder="Nombre del evento" />
-                                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                                    <span asp-validation-for="Nombre" class="text-danger small"></span>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Ubicacion" class="form-label">
-                                        <i class="fas fa-map-marker-alt"></i> @Html.DisplayNameFor(model => model.Ubicacion)
+                                <div class="form-group">
+                                    <label asp-for="Ubicacion" class="form-label fw-semibold">
+                                        <i class="fas fa-map-marker-alt text-gothic me-2"></i>Ubicación
                                     </label>
                                     <input asp-for="Ubicacion" class="form-control" placeholder="Ubicación del evento" />
-                                    <span asp-validation-for="Ubicacion" class="text-danger"></span>
+                                    <span asp-validation-for="Ubicacion" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label asp-for="Descripcion" class="form-label">
-                                <i class="fas fa-align-left"></i> @Html.DisplayNameFor(model => model.Descripcion)
+                        <div class="form-group mb-4">
+                            <label asp-for="Descripcion" class="form-label fw-semibold">
+                                <i class="fas fa-align-left text-gothic me-2"></i>Descripción
                             </label>
-                            <textarea asp-for="Descripcion" class="form-control" rows="4" 
+                            <textarea asp-for="Descripcion" class="form-control" rows="4"
                                       placeholder="Descripción detallada del evento"></textarea>
-                            <span asp-validation-for="Descripcion" class="text-danger"></span>
+                            <span asp-validation-for="Descripcion" class="text-danger small"></span>
                         </div>
 
-                        <div class="row">
+                        <div class="row g-3 mb-4">
                             <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Capacidad" class="form-label">
-                                        <i class="fas fa-users"></i> @Html.DisplayNameFor(model => model.Capacidad)
+                                <div class="form-group">
+                                    <label asp-for="Capacidad" class="form-label fw-semibold">
+                                        <i class="fas fa-users text-gothic me-2"></i>Capacidad
                                     </label>
-                                    <input asp-for="Capacidad" class="form-control" min="1" max="100" 
+                                    <input asp-for="Capacidad" class="form-control" min="1" max="100"
                                            placeholder="Máximo 100 personas" readonly />
-                                    <small class="form-text text-muted">La capacidad no se puede modificar después de crear el evento</small>
-                                    <span asp-validation-for="Capacidad" class="text-danger"></span>
+                                    <small class="text-muted">La capacidad no se puede modificar</small>
+                                    <span asp-validation-for="Capacidad" class="text-danger small"></span>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    <label asp-for="FechaHora" class="form-label">
-                                        <i class="fas fa-calendar-alt"></i> @Html.DisplayNameFor(model => model.FechaHora)
+                                <div class="form-group">
+                                    <label asp-for="FechaHora" class="form-label fw-semibold">
+                                        <i class="fas fa-calendar-alt text-gothic me-2"></i>Fecha y Hora
                                     </label>
-                                    <input asp-for="FechaHora" type="datetime-local" class="form-control" 
+                                    <input asp-for="FechaHora" type="datetime-local" class="form-control"
                                            min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
-                                    <span asp-validation-for="FechaHora" class="text-danger"></span>
+                                    <span asp-validation-for="FechaHora" class="text-danger small"></span>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    <label asp-for="PrecioBase" class="form-label">
-                                        <i class="fas fa-dollar-sign"></i> @Html.DisplayNameFor(model => model.PrecioBase)
+                                <div class="form-group">
+                                    <label asp-for="PrecioBase" class="form-label fw-semibold">
+                                        <i class="fas fa-dollar-sign text-gothic me-2"></i>Precio
                                     </label>
                                     <div class="input-group">
                                         <span class="input-group-text">₡</span>
-                                        <input asp-for="PrecioBase" class="form-control" step="0.01" min="0.01" 
+                                        <input asp-for="PrecioBase" class="form-control" step="0.01" min="0.01"
                                                placeholder="0.00" />
                                     </div>
-                                    <span asp-validation-for="PrecioBase" class="text-danger"></span>
+                                    <span asp-validation-for="PrecioBase" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Banner" class="form-label">
-                                        <i class="fas fa-image"></i> @Html.DisplayNameFor(model => model.Banner)
+                                <div class="form-group">
+                                    <label asp-for="Banner" class="form-label fw-semibold">
+                                        <i class="fas fa-image text-gothic me-2"></i>Banner (URL)
                                     </label>
-                                    <input asp-for="Banner" type="url" class="form-control" 
+                                    <input asp-for="Banner" type="url" class="form-control"
                                            placeholder="https://ejemplo.com/imagen.jpg" />
-                                    <small class="form-text text-muted">URL de la imagen del banner (opcional)</small>
-                                    <span asp-validation-for="Banner" class="text-danger"></span>
+                                    <small class="text-muted">URL de la imagen del banner (opcional)</small>
+                                    <span asp-validation-for="Banner" class="text-danger small"></span>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Estado" class="form-label">
-                                        <i class="fas fa-toggle-on"></i> @Html.DisplayNameFor(model => model.Estado)
+                                <div class="form-group">
+                                    <label asp-for="Estado" class="form-label fw-semibold">
+                                        <i class="fas fa-toggle-on text-gothic me-2"></i>Estado
                                     </label>
                                     <select asp-for="Estado" class="form-select">
                                         <option value="true">Activo</option>
                                         <option value="false">Inactivo</option>
                                     </select>
-                                    <span asp-validation-for="Estado" class="text-danger"></span>
+                                    <span asp-validation-for="Estado" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Información de fechas -->
-                        <div class="row">
+                        <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label class="form-label text-muted">
-                                        <i class="fas fa-calendar-plus"></i> Fecha de Creación
+                                <div class="form-group">
+                                    <label class="form-label text-muted fw-semibold">
+                                        <i class="fas fa-calendar-plus text-gothic me-2"></i>Fecha de Creación
                                     </label>
-                                    <input type="text" class="form-control" 
+                                    <input type="text" class="form-control"
                                            value="@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm")" readonly />
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label class="form-label text-muted">
-                                        <i class="fas fa-calendar-check"></i> Última Actualización
+                                <div class="form-group">
+                                    <label class="form-label text-muted fw-semibold">
+                                        <i class="fas fa-calendar-check text-gothic me-2"></i>Última Actualización
                                     </label>
-                                    <input type="text" class="form-control" 
+                                    <input type="text" class="form-control"
                                            value="@Model.FechaActualizacion.ToString("dd/MM/yyyy HH:mm")" readonly />
                                 </div>
                             </div>
                         </div>
 
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <strong>Importante:</strong> Los cambios en la fecha, precio o estado pueden afectar las reservas existentes.
+                        <div class="alert alert-light-orchid text-white mb-4">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Importante:</strong> Los cambios pueden afectar las reservas existentes.
                         </div>
 
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <a asp-action="Index" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left"></i> Cancelar
+                        <div class="d-flex justify-content-between flex-wrap gap-3">
+                            <div class="d-flex gap-3">
+                                <a asp-action="Index" class="btn btn-outline-gothic">
+                                    <i class="fas fa-arrow-left me-2"></i> Cancelar
                                 </a>
-                                <a asp-action="Details" asp-route-id="@Model.EventoId" class="btn btn-info">
-                                    <i class="fas fa-eye"></i> Ver Detalle
+                                <a asp-action="Details" asp-route-id="@Model.EventoId" class="btn btn-outline-gothic">
+                                    <i class="fas fa-eye me-2"></i> Ver Detalle
                                 </a>
                             </div>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Guardar Cambios
+                                <i class="fas fa-save me-2"></i> Guardar Cambios
                             </button>
                         </div>
                     </form>

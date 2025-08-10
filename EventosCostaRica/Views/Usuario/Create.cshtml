@@ -1,79 +1,109 @@
 ﻿@model CapaObjetos.ViewModelos.UsuarioViewModelo
 
 @{
-    ViewData["Title"] = "Crear Usuario";
+    ViewData["Title"] = ViewContext.RouteData.Values["action"].ToString() == "Edit" ? "Editar Usuario" : "Crear Usuario";
+    var isEdit = ViewContext.RouteData.Values["action"].ToString() == "Edit";
 }
 
-<h1>Crear Usuario</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" method="post">
-            @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-soft">
+                <div class="card-header bg-gothic text-white">
+                    <h3 class="mb-0"><i class="fas fa-user me-2"></i> @ViewData["Title"]</h3>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
 
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+                        @if (isEdit)
+                        {
+                            <input type="hidden" asp-for="UsuarioId" />
+                        }
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Nombre" class="form-label fw-semibold">
+                                        <i class="fas fa-id-card text-gothic me-2"></i>Nombre
+                                    </label>
+                                    <input asp-for="Nombre" class="form-control" />
+                                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Apellido" class="form-label fw-semibold">
+                                        <i class="fas fa-id-card text-gothic me-2"></i>Apellido
+                                    </label>
+                                    <input asp-for="Apellido" class="form-control" />
+                                    <span asp-validation-for="Apellido" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Email" class="form-label fw-semibold">
+                                <i class="fas fa-envelope text-gothic me-2"></i>Email
+                            </label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Password" class="form-label fw-semibold">
+                                <i class="fas fa-lock text-gothic me-2"></i>Contraseña
+                            </label>
+                            <input asp-for="Password" class="form-control" type="password" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Rol" class="form-label fw-semibold">
+                                <i class="fas fa-user-tag text-gothic me-2"></i>Rol
+                            </label>
+                            <select asp-for="Rol" class="form-select">
+                                <option value="0">-- Selecciona un rol --</option>
+                                <option value="1">Administrador</option>
+                                <option value="2">Cliente</option>
+                            </select>
+                            <span asp-validation-for="Rol" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Telefono" class="form-label fw-semibold">
+                                <i class="fas fa-phone text-gothic me-2"></i>Teléfono
+                            </label>
+                            <input asp-for="Telefono" class="form-control" />
+                            <span asp-validation-for="Telefono" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Estado" class="form-label fw-semibold">
+                                <i class="fas fa-toggle-on text-gothic me-2"></i>Estado
+                            </label>
+                            <select asp-for="Estado" class="form-select">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                            <span asp-validation-for="Estado" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between flex-wrap gap-3">
+                            <a asp-action="Index" class="btn btn-outline-gothic">
+                                <i class="fas fa-arrow-left me-2"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i> @(isEdit ? "Actualizar" : "Crear")
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label asp-for="Apellido" class="control-label"></label>
-                <input asp-for="Apellido" class="form-control" />
-                <span asp-validation-for="Apellido" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <!-- Este es el cambio clave: bind a RolID -->
-            <div class="form-group">
-                <label asp-for="Rol" class="control-label">Rol</label>
-                <select name="Rol" id="Rol" class="form-control">
-                    <!-- se añadió class="form-control" -->
-                    <option value="0">-- Selecciona un rol --</option>
-                    <option value="1">Administrador</option>
-                    <option value="2">Cliente</option>
-                </select>
-                <span asp-validation-for="Rol" class="text-danger"></span>
-            </div>
-
-
-            <div class="form-group">
-                <label asp-for="Telefono" class="control-label"></label>
-                <input asp-for="Telefono" class="form-control" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <select asp-for="Estado" class="form-control">
-                    <option value="true">Activo</option>
-                    <option value="false">Inactivo</option>
-                </select>
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Crear</button>
-                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Regresar</a>
 </div>
 
 @section Scripts {

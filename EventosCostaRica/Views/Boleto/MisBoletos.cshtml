@@ -4,61 +4,63 @@
     ViewData["Title"] = "Mis Boletos";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-ticket-alt"></i> Mis Boletos</h2>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h2><i class="fas fa-ticket-alt me-2"></i> Mis Boletos</h2>
         <a asp-controller="ListaEvento" asp-action="ProximosEventos" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Comprar más boletos
+            <i class="fas fa-plus me-2"></i> Comprar más
         </a>
     </div>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle"></i> @TempData["Success"]
+        <div class="alert alert-opal alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i> @TempData["Success"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+        <div class="alert alert-light-orchid alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-2"></i> @TempData["Error"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
     @if (Model.Any())
     {
-        <div class="row">
+        <div class="row g-4">
             @foreach (var boleto in Model)
             {
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span class="badge @(boleto.Estado ? "bg-success" : "bg-danger")">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-soft hover-lift">
+                        <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-0 py-3">
+                            <span class="badge @(boleto.Estado ? "bg-opal" : "bg-light-orchid")">
                                 @(boleto.Estado ? "Válido" : "Cancelado")
                             </span>
                             <small class="text-muted">#@boleto.BoletoId</small>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body pt-0">
                             <h5 class="card-title">@boleto.NombreEvento</h5>
-                            <div class="mb-2">
+
+                            <div class="mb-3">
                                 <small class="text-muted">
-                                    <i class="fas fa-calendar"></i> 
-                                    @DateTime.Parse(boleto.FechaCompra.ToString()).ToString("dd/MM/yyyy HH:mm")
+                                    <i class="fas fa-calendar me-2"></i>
+                                    @boleto.FechaCompra.ToString("dd/MM/yyyy HH:mm")
                                 </small>
                             </div>
+
                             <p class="card-text">
-                                <strong><i class="fas fa-couch"></i> Asiento:</strong> @boleto.InformacionAsiento<br>
-                                <strong><i class="fas fa-dollar-sign"></i> Precio:</strong> ₡@boleto.Precio.ToString("N2")
+                                <strong><i class="fas fa-couch me-2"></i> Asiento:</strong> @boleto.InformacionAsiento<br>
+                                <strong><i class="fas fa-dollar-sign me-2"></i> Precio:</strong> ₡@boleto.Precio.ToString("N2")
                             </p>
                         </div>
-                        <div class="card-footer">
+                        <div class="card-footer bg-transparent border-0 pt-0">
                             <div class="d-grid">
-                                <a asp-action="Details" asp-route-id="@boleto.BoletoId" 
-                                   class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-eye"></i> Ver Detalles
+                                <a asp-action="Details" asp-route-id="@boleto.BoletoId"
+                                   class="btn btn-outline-gothic">
+                                    <i class="fas fa-eye me-2"></i> Ver Detalles
                                 </a>
                             </div>
                         </div>
@@ -66,28 +68,27 @@
                 </div>
             }
         </div>
-        
-        <!-- Resumen -->
-        <div class="row mt-4">
+
+        <div class="row mt-5">
             <div class="col-12">
-                <div class="card bg-light">
+                <div class="card bg-aqua-squeeze border-0 shadow-soft">
                     <div class="card-body">
                         <div class="row text-center">
-                            <div class="col-md-3">
-                                <h4 class="text-primary">@Model.Count()</h4>
-                                <small class="text-muted">Total de Boletos</small>
+                            <div class="col-md-3 mb-3 mb-md-0">
+                                <h4 class="text-gothic">@Model.Count()</h4>
+                                <small class="text-muted">Total Boletos</small>
+                            </div>
+                            <div class="col-md-3 mb-3 mb-md-0">
+                                <h4 class="text-opal">@Model.Count(b => b.Estado)</h4>
+                                <small class="text-muted">Válidos</small>
+                            </div>
+                            <div class="col-md-3 mb-3 mb-md-0">
+                                <h4 class="text-edgewater">@Model.GroupBy(b => b.EventoId).Count()</h4>
+                                <small class="text-muted">Eventos</small>
                             </div>
                             <div class="col-md-3">
-                                <h4 class="text-success">@Model.Count(b => b.Estado)</h4>
-                                <small class="text-muted">Boletos Válidos</small>
-                            </div>
-                            <div class="col-md-3">
-                                <h4 class="text-info">@Model.GroupBy(b => b.EventoId).Count()</h4>
-                                <small class="text-muted">Eventos Diferentes</small>
-                            </div>
-                            <div class="col-md-3">
-                                <h4 class="text-warning">₡@Model.Where(b => b.Estado).Sum(b => b.Precio).ToString("N2")</h4>
-                                <small class="text-muted">Total Invertido</small>
+                                <h4 class="text-light-orchid">₡@Model.Where(b => b.Estado).Sum(b => b.Precio).ToString("N2")</h4>
+                                <small class="text-muted">Total</small>
                             </div>
                         </div>
                     </div>
@@ -97,31 +98,36 @@
     }
     else
     {
-        <div class="text-center mt-5">
+        <div class="text-center py-5">
             <div class="mb-4">
-                <i class="fas fa-ticket-alt fa-5x text-muted"></i>
+                <i class="fas fa-ticket-alt fa-5x text-opal"></i>
             </div>
-            <h4 class="text-muted">No tienes boletos aún</h4>
-            <p class="text-muted">¡Explora nuestros próximos eventos y compra tu primer boleto!</p>
+            <h4 class="text-gothic">No tienes boletos aún</h4>
+            <p class="text-muted mb-4">¡Explora nuestros eventos y compra tu primer boleto!</p>
             <a asp-controller="ListaEvento" asp-action="ProximosEventos" class="btn btn-primary">
-                <i class="fas fa-search"></i> Ver Próximos Eventos
+                <i class="fas fa-search me-2"></i> Ver Eventos
             </a>
         </div>
     }
 </div>
 
 <style>
-    .card {
+    .hover-lift {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+    .alert-opal {
+        background-color: var(--opal);
+        color: white;
     }
-    
-    .card-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+
+    .alert-light-orchid {
+        background-color: var(--light-orchid);
+        color: white;
     }
 </style>

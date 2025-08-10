@@ -20,9 +20,9 @@ namespace CapaObjetos.Modelos
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaActualizacion { get; set; }
         public bool Estado { get; set; }
-        
-        public string Banner { get; set; } = string.Empty;
-        
+
+        public string? Banner { get; set; }
+
         [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor a 0")]
         public decimal PrecioBase { get; set; }
         

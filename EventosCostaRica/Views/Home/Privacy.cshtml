@@ -1,6 +1,51 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Política de Privacidad";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-soft">
+                <div class="card-header bg-gothic text-white">
+                    <h2 class="mb-0"><i class="fas fa-shield-alt me-2"></i> @ViewData["Title"]</h2>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <h4 class="text-gothic mb-3">1. Información que recopilamos</h4>
+                    <p class="mb-4">
+                        Recopilamos información que nos proporcionas al registrarte, como tu nombre, dirección de correo electrónico
+                        y número de teléfono. También recopilamos información sobre tus compras y preferencias de eventos.
+                    </p>
+
+                    <h4 class="text-gothic mb-3">2. Uso de la información</h4>
+                    <p class="mb-4">
+                        Utilizamos tu información para procesar tus compras, mejorar nuestros servicios, comunicarnos contigo
+                        y personalizar tu experiencia. No compartimos tu información con terceros sin tu consentimiento.
+                    </p>
+
+                    <h4 class="text-gothic mb-3">3. Seguridad de los datos</h4>
+                    <p class="mb-4">
+                        Implementamos medidas de seguridad para proteger tu información personal. Sin embargo, ningún método
+                        de transmisión por Internet o almacenamiento electrónico es 100% seguro.
+                    </p>
+
+                    <h4 class="text-gothic mb-3">4. Cookies y tecnologías similares</h4>
+                    <p class="mb-4">
+                        Utilizamos cookies para mejorar tu experiencia en nuestro sitio web. Puedes configurar tu navegador
+                        para rechazar todas las cookies, pero algunas funciones pueden no estar disponibles.
+                    </p>
+
+                    <h4 class="text-gothic mb-3">5. Cambios a esta política</h4>
+                    <p class="mb-0">
+                        Podemos actualizar esta política ocasionalmente. Te notificaremos sobre cambios significativos
+                        publicando la nueva política en este sitio.
+                    </p>
+                </div>
+                <div class="card-footer bg-aqua-squeeze border-0">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-gothic">
+                        <i class="fas fa-arrow-left me-2"></i> Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,21 +1,27 @@
 using System.Diagnostics;
 using CapaObjetos.ViewModelos;
 using Microsoft.AspNetCore.Mvc;
+using CapaLogicaDeNegocioBLL.Servicios.ListaEventos;
 
 namespace EventosCostaRica.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IListaEventoServicio _eventoServicio;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+             ILogger<HomeController> logger,
+             IListaEventoServicio eventoServicio)
         {
             _logger = logger;
+            _eventoServicio = eventoServicio;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var proximosEventos = await _eventoServicio.ObtenerProximosEventosAsync();
+            return View(proximosEventos);
         }
 
         public IActionResult Privacy()

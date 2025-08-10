@@ -1,21 +1,69 @@
 ﻿@model LoginViewModel
-<form asp-action="Login" method="post">
-    <h2>Ingresar</h2>
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger" />
+
+<div class="auth-wrapper">
+    <div class="auth-card bg-white rounded-xl shadow-soft p-4 p-md-5" style="max-width: 500px;">
+        <div class="text-center mb-4">
+            <i class="fas fa-calendar-alt fa-3x text-gothic mb-3"></i>
+            <h2 class="fw-bold text-gothic">Ingresa a tu cuenta</h2>
+            <p class="text-muted">Gestiona tus eventos y boletos</p>
+        </div>
+
+        <form asp-action="Login" method="post" class="needs-validation" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-semibold">Correo electrónico</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-edgewater"><i class="fas fa-envelope"></i></span>
+                    <input asp-for="Email" class="form-control" placeholder="tu@email.com" required />
+                </div>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-semibold">Contraseña</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-edgewater"><i class="fas fa-lock"></i></span>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" required />
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label">Recordar mi sesión</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 mb-3">Ingresar</button>
+
+            <div class="text-center mt-3">
+                <p class="mb-0">¿No tienes cuenta? <a asp-action="Register" class="text-gothic fw-semibold">Regístrate</a></p>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger" />
-    </div>
-    <div class="form-group form-check">
-        <input asp-for="RememberMe" class="form-check-input" />
-        <label asp-for="RememberMe" class="form-check-label">Recuérdame</label>
-    </div>
-    <button type="submit" class="btn btn-primary">Entrar</button>
-    <a asp-action="Register">Crear cuenta</a>
-</form>
+</div>
+
+<style>
+    .auth-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: var(--edgewater);
+        padding: 2rem;
+    }
+
+    .auth-card {
+        width: 100%;
+        border: none;
+    }
+
+    .input-group-text {
+        border: none;
+        color: var(--gothic);
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
