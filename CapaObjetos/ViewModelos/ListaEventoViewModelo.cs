@@ -5,11 +5,6 @@ namespace CapaObjetos.ViewModelos
 {
     public class ListaEventoViewModelo
     {
-        public ListaEventoViewModelo()
-        {
-            Estado = true; // Valor por defecto
-        }
-
         public int EventoId { get; set; }
 
         [Required(ErrorMessage = "El nombre es requerido")]
@@ -40,7 +35,7 @@ namespace CapaObjetos.ViewModelos
         public DateTime FechaActualizacion { get; set; }
 
         [Display(Name = "Estado")]
-        public bool Estado { get; set; }
+        public bool? Estado { get; set; }
 
         [Display(Name = "Banner")]
         public string? Banner { get; set; }

@@ -14,7 +14,7 @@
                     <img src="@Model.Banner" class="card-img-top" alt="Banner del evento" style="height: 300px; object-fit: cover;">
                 }
                 <div class="card-header bg-gothic text-white">
-                    <h1 class="card-title mb-0">@Model.Nombre</h1>
+                    <h1 class="card-title mb-0 text-white">@Model.Nombre</h1>
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <span class="badge @(Model.Estado ? "bg-opal" : "bg-light-orchid")">
                             @(Model.Estado ? "Activo" : "Inactivo")

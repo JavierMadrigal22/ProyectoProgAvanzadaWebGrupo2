@@ -97,7 +97,6 @@ namespace EventosCostaRica.Controllers
             {
                 try
                 {
-                    evento.Estado = true;
                     evento.FechaCreacion = DateTime.Now;
                     evento.FechaActualizacion = DateTime.Now;
 

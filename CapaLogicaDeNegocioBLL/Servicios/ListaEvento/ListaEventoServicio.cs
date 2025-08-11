@@ -30,7 +30,6 @@ namespace CapaLogicaDeNegocioBLL.Servicios.ListaEventos
                 var listaEvento = _mapper.Map<ListaEvento>(listaEventoViewModelo);
                 listaEvento.FechaCreacion = DateTime.Now;
                 listaEvento.FechaActualizacion = DateTime.Now;
-                listaEvento.Estado = true;
 
                 var resultado = await _listaEventoRepositorio.CrearEventoAsync(listaEvento);
                 
@@ -128,7 +127,9 @@ namespace CapaLogicaDeNegocioBLL.Servicios.ListaEventos
             try
             {
                 var eventos = await _listaEventoRepositorio.ObtenerListaEventoAsync();
-                var proximosEventos = eventos.Where(e => e.FechaHora > DateTime.Now && e.Estado).ToList();
+                var proximosEventos = eventos
+                    .Where(e => e.FechaHora > DateTime.Now && e.Estado == true)
+                    .ToList();
                 return _mapper.Map<List<ListaEventoViewModelo>>(proximosEventos);
             }
             catch (Exception ex)

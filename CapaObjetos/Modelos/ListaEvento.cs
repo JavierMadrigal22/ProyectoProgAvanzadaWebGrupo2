@@ -6,10 +6,6 @@ namespace CapaObjetos.Modelos
 {
     public partial class ListaEvento
     {
-        public ListaEvento()
-        {
-            Estado = true;
-        }
 
         public int EventoId { get; set; }
         public string Nombre { get; set; } = null!;
@@ -19,7 +15,7 @@ namespace CapaObjetos.Modelos
         public DateTime FechaHora { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaActualizacion { get; set; }
-        public bool Estado { get; set; }
+        public bool? Estado { get; set; }
 
         public string? Banner { get; set; }
 

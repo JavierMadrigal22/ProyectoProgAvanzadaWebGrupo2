@@ -37,8 +37,8 @@
                                 <td>@item.Capacidad</td>
                                 <td>₡@item.PrecioBase.ToString("N2")</td>
                                 <td>
-                                    <span class="badge @(item.Estado ? "bg-opal" : "bg-light-orchid")">
-                                        @(item.Estado ? "Activo" : "Inactivo")
+                                    <span class="badge @(item.Estado == true ? "bg-opal" : "bg-light-orchid")">
+                                        @(item.Estado == true ? "Activo" : "Inactivo")
                                     </span>
                                 </td>
                                 <td>
