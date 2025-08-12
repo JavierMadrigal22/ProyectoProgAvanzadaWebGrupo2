@@ -31,9 +31,9 @@
                         <div class="text-center mb-4">
                             <div class="badge bg-dark px-3 py-2 mb-3">ESCENARIO</div>
                             <div class="d-flex justify-content-center gap-3">
-                                <span class="badge bg-opal me-2">Disponible</span>
-                                <span class="badge bg-light-orchid me-2">Ocupado</span>
-                                <span class="badge bg-gothic">Seleccionado</span>
+                                <span class="badge bg-opal me-2 text-black">Disponible</span>
+                                <span class="badge bg-light-orchid me-2 text-black">Ocupado</span>
+                                <span class="badge bg-gothic text-black">Seleccionado</span>
                             </div>
                         </div>
 
@@ -60,7 +60,7 @@
                                             var isSelected = Model.AsientosSeleccionados.Contains(asiento?.AsientoId ?? 0);
                                             <label class="asiento-label">
                                                 <input type="checkbox" name="AsientosSeleccionados" value="@(asiento?.AsientoId ?? 0)"
-                                                       class="asiento-checkbox d-none" @(isSelected ? "checked" : "") />
+                                                       class="asiento-checkbox d-none text-black" @(isSelected ? "checked" : "") />
                                                 <span class="asiento @(isSelected ? "seleccionado bg-gothic" : "disponible bg-opal")"
                                                       data-fila="@fila" data-numero="@numero"
                                                       title="Fila @fila - Asiento @numero">

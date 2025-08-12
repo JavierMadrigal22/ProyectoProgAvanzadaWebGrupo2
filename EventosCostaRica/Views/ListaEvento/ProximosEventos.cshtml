@@ -134,15 +134,15 @@
                         <div class="row text-center">
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <h4 class="text-gothic">@Model.Count()</h4>
-                                <small class="text-muted">Próximos Eventos</small>
+                                <small class="text-muted text-black"><strong>Próximos Eventos</strong></small>
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <h4 class="text-opal">@Model.Where(e => e.FechaHora.Date == DateTime.Today).Count()</h4>
-                                <small class="text-muted">Eventos Hoy</small>
+                                <small class="text-muted text-black"><strong>Eventos Hoy</strong></small>
                             </div>
                             <div class="col-md-4">
                                 <h4 class="text-edgewater">@Model.Where(e => e.FechaHora <= DateTime.Now.AddDays(7)).Count()</h4>
-                                <small class="text-muted">Esta Semana</small>
+                                <small class="text-muted text-black"><strong>Esta Semana</strong></small>
                             </div>
                         </div>
                     </div>

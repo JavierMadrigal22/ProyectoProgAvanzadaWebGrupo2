@@ -30,33 +30,33 @@
     {
         <div class="row g-4 mb-4">
             <div class="col-md-3">
-                <div class="card bg-edgewater text-gothic text-center border-0 h-100">
+                <div class="card bg-edgewater text-black text-center border-0 h-100">
                     <div class="card-body p-3">
-                        <h3 class="mb-0">@Model.Count()</h3>
+                        <h3 class="mb-0 text-black">@Model.Count()</h3>
                         <p class="mb-0">Total Boletos</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card bg-edgewater text-gothic text-center border-0 h-100">
+                <div class="card bg-edgewater text-black text-center border-0 h-100">
                     <div class="card-body p-3">
-                        <h3 class="mb-0">@Model.Count(b => b.Estado)</h3>
+                        <h3 class="mb-0 text-black">@Model.Count(b => b.Estado)</h3>
                         <p class="mb-0">Válidos</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card bg-light-orchid text-white text-center border-0 h-100">
+                <div class="card bg-light-orchid text-black text-center border-0 h-100">
                     <div class="card-body p-3">
-                        <h3 class="mb-0">₡@Model.Where(b => b.Estado).Sum(b => b.Precio).ToString("N0")</h3>
+                        <h3 class="mb-0 text-black">₡@Model.Where(b => b.Estado).Sum(b => b.Precio).ToString("N0")</h3>
                         <p class="mb-0">Ingresos</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card bg-edgewater text-gothic text-center border-0 h-100">
+                <div class="card bg-edgewater text-black text-center border-0 h-100">
                     <div class="card-body p-3">
-                        <h3 class="mb-0">@Model.GroupBy(b => b.UsuarioId).Count()</h3>
+                        <h3 class="mb-0 text-black">@Model.GroupBy(b => b.UsuarioId).Count()</h3>
                         <p class="mb-0">Compradores</p>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                                 <tr>
                                     <td><strong>#@boleto.BoletoId</strong></td>
                                     <td>@boleto.NombreUsuario</td>
-                                    <td><span class="badge bg-edgewater">@boleto.InformacionAsiento</span></td>
+                                    <td><span class="badge bg-edgewater text-black">@boleto.InformacionAsiento</span></td>
                                     <td>₡@boleto.Precio.ToString("N2")</td>
                                     <td>
                                         <small>
@@ -95,7 +95,7 @@
                                         </small>
                                     </td>
                                     <td>
-                                        <span class="badge @(boleto.Estado ? "bg-opal" : "bg-light-orchid")">
+                                        <span class="badge @(boleto.Estado ? "bg-opal" : "bg-light-orchid") text-black">
                                             @(boleto.Estado ? "Válido" : "Cancelado")
                                         </span>
                                     </td>
