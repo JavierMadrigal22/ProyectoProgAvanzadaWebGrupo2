@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel.DataAnnotations;
 
 namespace CapaObjetos.ViewModelos
@@ -37,12 +38,25 @@ namespace CapaObjetos.ViewModelos
         public decimal PrecioBase { get; set; }
         
         public int AsientosOcupados { get; set; }
-        public int AsientosDisponibles => Math.Max(0, Capacidad - AsientosOcupados);
+        public int CapacidadEfectiva
+        {
+            get
+            {
+                var seatsCount = Asientos?.Count ?? 0;
+                if (seatsCount > 0)
+                {
+                    return Capacidad > 0 ? Math.Min(Capacidad, seatsCount) : seatsCount;
+                }
+                return Math.Max(Capacidad, 0);
+            }
+        }
+        public int AsientosDisponibles => Math.Max(0, CapacidadEfectiva - AsientosOcupados);
         public bool EstaVendido => AsientosDisponibles <= 0;
+        public bool HayAsientosDisponibles => CapacidadEfectiva > 0 && Asientos.Any(a => !a.EstaOcupado && (((a.Fila - 1) * 10) + a.Numero) <= CapacidadEfectiva);
         public bool EsProximoEvento => FechaHora > DateTime.Now;
         
         public List<AsientoViewModelo> Asientos { get; set; } = new List<AsientoViewModelo>();
         
-        public bool PuedeComprar => EsProximoEvento && !EstaVendido;
+        public bool PuedeComprar => EsProximoEvento && HayAsientosDisponibles;
     }
 }
