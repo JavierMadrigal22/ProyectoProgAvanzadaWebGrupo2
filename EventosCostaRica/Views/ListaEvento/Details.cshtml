@@ -70,10 +70,10 @@
                         <p class="text-opal">@Model.AsientosDisponibles</p>
                     </div>
 
+                    @{ var capacidad = Math.Max(0, Model.Capacidad); var ratio = capacidad == 0 ? 0 : (double)Model.AsientosOcupados / capacidad; var pct = Math.Clamp(ratio * 100, 0, 100); }
                     <div class="progress mb-4">
-                        <div class="progress-bar bg-gothic" role="progressbar"
-                             style="width: @(((double)Model.AsientosOcupados / Model.Capacidad) * 100)%">
-                            @(((double)Model.AsientosOcupados / Model.Capacidad) * 100).ToString("F1")% Ocupado
+                        <div class="progress-bar bg-gothic" role="progressbar" style="width: @pct%">
+                            @pct.ToString("F1")% Ocupado
                         </div>
                     </div>
 
@@ -112,7 +112,8 @@
             <div class="card border-0 shadow-soft mb-4">
                 <div class="card-header bg-gothic text-white">
                     <h5 class="mb-0"><i class="fas fa-couch me-2"></i> Distribución de Asientos</h5>
-                    <small class="text-opal">10 filas × 10 asientos = 100 personas</small>
+                    @{ var totalCeldas = Math.Min(Model.Capacidad, 100); var columnas = 10; var filas = (int)Math.Ceiling(totalCeldas / 10.0); }
+                    <small class="text-opal">@filas filas × @columnas asientos = @totalCeldas personas</small>
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-4">
@@ -131,12 +132,19 @@
                             </div>
 
                             <div class="asientos-container">
-                                @for (int fila = 1; fila <= 10; fila++)
+                                @for (int fila = 1; fila <= filas; fila++)
                                 {
                                     <div class="fila-asientos mb-2">
                                         <span class="fila-numero text-gothic fw-bold">@fila</span>
-                                        @for (int numero = 1; numero <= 10; numero++)
+                                        @for (int numero = 1; numero <= columnas; numero++)
                                         {
+                                            var indice = (fila - 1) * 10 + numero;
+                                            if (indice > totalCeldas)
+                                            {
+                                                <span class="asiento placeholder"></span>
+                                                continue;
+                                            }
+
                                             var asiento = Model.Asientos.FirstOrDefault(a => a.Fila == fila && a.Numero == numero);
                                             var disponible = asiento == null || !asiento.EstaOcupado;
 

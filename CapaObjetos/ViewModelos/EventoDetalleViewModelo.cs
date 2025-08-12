@@ -36,16 +36,13 @@ namespace CapaObjetos.ViewModelos
         [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor a 0")]
         public decimal PrecioBase { get; set; }
         
-        // Propiedades calculadas
-        public bool EstaVendido => AsientosDisponibles == 0;
         public int AsientosOcupados { get; set; }
-        public int AsientosDisponibles => Capacidad - AsientosOcupados;
+        public int AsientosDisponibles => Math.Max(0, Capacidad - AsientosOcupados);
+        public bool EstaVendido => AsientosDisponibles <= 0;
         public bool EsProximoEvento => FechaHora > DateTime.Now;
         
-        // Lista de asientos para mostrar la distribución
         public List<AsientoViewModelo> Asientos { get; set; } = new List<AsientoViewModelo>();
         
-        // Información adicional para la compra
         public bool PuedeComprar => EsProximoEvento && !EstaVendido;
     }
 }

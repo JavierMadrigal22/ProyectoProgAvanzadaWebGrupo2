@@ -38,12 +38,20 @@
                         </div>
 
                         <div class="asientos-container mb-4" style="max-height: 400px; overflow-y: auto;">
-                            @for (int fila = 1; fila <= 10; fila++)
+                            @{ var totalCeldas = Math.Min(Model.Evento.Capacidad, 100); var columnas = 10; var filas = (int)Math.Ceiling(totalCeldas / 10.0); }
+                            @for (int fila = 1; fila <= filas; fila++)
                             {
                                 <div class="fila-asientos mb-2">
                                     <span class="fila-numero text-gothic fw-bold">@fila</span>
-                                    @for (int numero = 1; numero <= 10; numero++)
+                                    @for (int numero = 1; numero <= columnas; numero++)
                                     {
+                                        var indice = (fila - 1) * 10 + numero;
+                                        if (indice > totalCeldas)
+                                        {
+                                            <span class="asiento placeholder"></span>
+                                            continue;
+                                        }
+
                                         var asiento = Model.Asientos.FirstOrDefault(a => a.Fila == fila && a.Numero == numero);
                                         var disponible = asiento != null && !asiento.EstaOcupado;
 

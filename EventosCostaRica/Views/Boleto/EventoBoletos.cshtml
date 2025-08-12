@@ -121,20 +121,25 @@
                 </div>
 
                 <div class="asientos-container">
-                    @for (int fila = 1; fila <= 10; fila++)
+                    @{ var eventoCapacidad = evento?.Capacidad ?? 0; var totalCeldas = Math.Min(eventoCapacidad, 100); var columnas = 10; var filas = (int)Math.Ceiling(totalCeldas / 10.0); }
+                    @for (int fila = 1; fila <= filas; fila++)
                     {
                         <div class="fila-asientos mb-2">
                             <span class="fila-numero text-gothic fw-bold">@fila</span>
-                            @for (int numero = 1; numero <= 10; numero++)
+                            @for (int numero = 1; numero <= columnas; numero++)
                             {
-                                var boletoAsiento = Model.FirstOrDefault(b =>
-                                b.InformacionAsiento.Contains($"Fila {fila}") &&
-                                b.InformacionAsiento.Contains($"Asiento {numero}") &&
-                                b.Estado);
+                                var indice = (fila - 1) * 10 + numero;
+                                if (indice > totalCeldas)
+                                {
+                                    <span class="asiento-mini placeholder"></span>
+                                    continue;
+                                }
+
+                                var boletoAsiento = Model.FirstOrDefault(b => b.FilaAsiento == fila && b.NumeroAsiento == numero && b.Estado);
                                 var vendido = boletoAsiento != null;
 
                                 <span class="asiento-mini @(vendido ? "vendido bg-light-orchid" : "disponible bg-opal")"
-                                      title="Fila @fila - Asiento @numero (@(vendido ? $"Vendido a {boletoAsiento.NombreUsuario}" : "Disponible"))">
+                                      title="Fila @fila - Asiento @numero (@(vendido ? $"Vendido a {boletoAsiento?.NombreUsuario}" : "Disponible"))">
                                     @numero
                                 </span>
                             }
